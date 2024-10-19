@@ -1808,7 +1808,8 @@ void CBreakableProp::Break( CBaseEntity *pBreaker, const CTakeDamageInfo &info )
 // DYNAMIC PROPS
 //=============================================================================================================
 LINK_ENTITY_TO_CLASS( dynamic_prop, CDynamicProp );
-LINK_ENTITY_TO_CLASS( prop_dynamic, CDynamicProp );	
+LINK_ENTITY_TO_CLASS( prop_dynamic, CDynamicProp );
+LINK_ENTITY_TO_CLASS( prop_car_glass, CDynamicProp); // L4D/2
 LINK_ENTITY_TO_CLASS( prop_dynamic_override, CDynamicProp );	
 
 BEGIN_DATADESC( CDynamicProp )
@@ -2407,6 +2408,7 @@ void COrnamentProp::InputDetach( inputdata_t &inputdata )
 //=============================================================================
 LINK_ENTITY_TO_CLASS( physics_prop, CPhysicsProp );
 LINK_ENTITY_TO_CLASS( prop_physics, CPhysicsProp );	
+LINK_ENTITY_TO_CLASS( prop_car_alarm, CPhysicsProp); // L4D/2 Car w Alarm
 LINK_ENTITY_TO_CLASS( prop_physics_override, CPhysicsProp );	
 
 BEGIN_DATADESC( CPhysicsProp )
@@ -4767,6 +4769,7 @@ BEGIN_DATADESC(CPropDoorRotating)
 END_DATADESC()
 
 LINK_ENTITY_TO_CLASS(prop_door_rotating, CPropDoorRotating);
+LINK_ENTITY_TO_CLASS(prop_door_rotating_checkpoint, CPropDoorRotating); // L4D and L4D2 Doortype.
 
 //-----------------------------------------------------------------------------
 // Destructor

@@ -1,15 +1,16 @@
 "GameInfo"
 {
-	game 		"My First HL2 Mod"
-	title 		"HALF-LIFE'"
+	game 		"Srcbox"
+	title 		"" // Ingame Name
 	title2		""
-	supportsvr	1
+	supportsvr	0
+	gamelogo	1
 
 	type		singleplayer_only
 
 	FileSystem
 	{
-		SteamAppId				243730 // This sets the app ID in Steam. This is the Source SDK Base 2013 Singleplayer
+		SteamAppId				2437315 // This sets the app ID in Steam. This is the Source SDK Base 2013 Singleplayer
 		
 		//
 		// The code that loads this file automatically does a few things here:
@@ -56,6 +57,10 @@
 			game				|all_source_engine_paths|hl2/hl2_sound_vo_english.vpk
 			game				|all_source_engine_paths|hl2/hl2_sound_misc.vpk
 			game				|all_source_engine_paths|hl2/hl2_misc.vpk
+			//game				|all_source_engine_paths|hl2mp/hl2mp_pak_dir.vpk
+			// We then begin to point towards other games pak files to mount them into the filesystem
+			//game				"G:/Steam/steamapps/common/Left 4 Dead 2/left4dead2/pak01_dir.vpk"
+			//game				"G:/Steam/steamapps/common/left 4 dead/left4dead/pak01_dir.vpk"
 			platform			|all_source_engine_paths|platform/platform_misc.vpk
 
 			// Add the HL2 directory as a game search path.  This is also where where writes
@@ -66,7 +71,13 @@
 			gamebin				hl2_mod/bin
 
 			// Last, mount in shared HL2 loose files
+			game				|all_source_engine_paths|hl1s
+			game				|all_source_engine_paths|fortnite
+			game				|all_source_engine_paths|pbr
 			game				|all_source_engine_paths|hl2
+			game				|all_source_engine_paths|hl2_beta
+			game				|all_source_engine_paths|l4d
+			//game				|all_source_engine_paths|l4d2
 			platform			|all_source_engine_paths|platform
 		}
 	}

@@ -1160,7 +1160,68 @@ bool CAmbientGeneric::KeyValue( const char *szKeyName, const char *szValue )
 
 
 // =================== ROOM SOUND FX ==========================================
+// Updated from Half-Life 1 SDK
 
+
+class CEnvSound : public CPointEntity
+{
+public:
+	DECLARE_CLASS(CEnvSound, CPointEntity);
+
+	void KeyValue(KeyValueData_HL1* pkvd);
+	void Spawn(void);
+
+	void Think(void);
+
+	//virtual int		Save(CSave &save);
+	//virtual int		Restore(CRestore &restore);
+	static	TYPEDESCRIPTION m_SaveData[];
+
+	float m_flRadius;
+	float m_flRoomtype;
+};
+
+LINK_ENTITY_TO_CLASS(env_sound, CEnvSound);
+TYPEDESCRIPTION	CEnvSound::m_SaveData[] =
+{
+	DEFINE_FIELDHL1(CEnvSound, m_flRadius, FIELD_FLOATHL1),
+	DEFINE_FIELDHL1(CEnvSound, m_flRoomtype, FIELD_FLOATHL1),
+};
+
+//IMPLEMENT_SAVERESTORE(CEnvSound, CBaseEntity);
+
+//-----------------------------------------------------------------------------
+// Spawn
+//-----------------------------------------------------------------------------
+void CEnvSound::Spawn(void)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Think
+//-----------------------------------------------------------------------------
+void CEnvSound::Think(void)
+{
+}
+
+
+void CEnvSound::KeyValue(KeyValueData_HL1 *pkvd)
+{
+
+	if (FStrEq(pkvd->szKeyName, "radius"))
+	{
+		m_flRadius = atof(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+	if (FStrEq(pkvd->szKeyName, "roomtype"))
+	{
+		m_flRoomtype = atof(pkvd->szValue);
+		pkvd->fHandled = TRUE;
+	}
+}
+
+
+//LINK_ENTITY_TO_CLASS(env_sound, CEnvSoundscape);
 
 
 

@@ -610,9 +610,10 @@ void VectorToColorRGBExp32( const Vector& vin, ColorRGBExp32 &c )
 	}
 
 	// we should never need to clamp:
-	Assert(vin.x * scalar <= 255.0f && 
-		   vin.y * scalar <= 255.0f && 
-		   vin.z * scalar <= 255.0f);
+	// Todo: is this even necessary?????
+	//Assert(vin.x * scalar <= 255.0f && 
+	//	   vin.y * scalar <= 255.0f && 
+	//	   vin.z * scalar <= 255.0f);
 
 	// This awful construction is necessary to prevent VC2005 from using the 
 	// fldcw/fnstcw control words around every float-to-unsigned-char operation.

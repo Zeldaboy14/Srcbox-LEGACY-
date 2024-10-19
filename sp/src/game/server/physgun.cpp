@@ -24,16 +24,18 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar phys_gunmass("phys_gunmass", "200");
-ConVar phys_gunvel("phys_gunvel", "400");
-ConVar phys_gunforce("phys_gunforce", "5e5" );
-ConVar phys_guntorque("phys_guntorque", "100" );
+ConVar phys_gunmass("phys_gunmass", "2000"); // Originally 200
+ConVar phys_gunvel("phys_gunvel", "4000"); // Originally 400
+ConVar phys_gunforce("phys_gunforce", "5e5.5" ); // Originally 5e5. Allows for heavier objects to be picked up
+ConVar phys_guntorque("phys_guntorque", "1000" ); // Originally 100
 ConVar phys_gunglueradius("phys_gunglueradius", "128" );
+ConVar phys_gunrotationspeed("phys_gunrotationspeed", "10");
 
 static int g_physgunBeam;
 #define PHYSGUN_BEAM_SPRITE		"sprites/physbeam.vmt"
 
-#define MAX_PELLETS	16
+//#define MAX_PELLETS	16
+#define MAX_PELLETS	60
 
 class CWeaponGravityGun;
 
@@ -369,7 +371,7 @@ IMotionEvent::simresult_e CGravControllerPoint::Simulate( IPhysicsMotionControll
 				float angleDiff = angleDest - angleSrc;
 				angleDiff = RAD2DEG(angleDiff);
 				axis += m_targetAlignNormal * angleDiff;
-				//world = m_targetPosition;// + rotDest * (1-ratio);
+				world = m_targetPosition;// + rotDest * (1-ratio);
 //				NDebugOverlay::Line( worldRotCenter, worldRotCenter-m_targetAlignNormal*50, 255, 0, 0, false, 0.1 );
 //				NDebugOverlay::Line( worldRotCenter, worldRotCenter+tangent*50, 0, 255, 0, false, 0.1 );
 //				NDebugOverlay::Line( worldRotCenter, worldRotCenter+binormal*50, 0, 0, 255, false, 0.1 );
@@ -485,7 +487,7 @@ public:
 	void Equip( CBaseCombatCharacter *pOwner )
 	{
 		// add constraint ammo
-		pOwner->SetAmmoCount( MAX_PELLETS, m_iSecondaryAmmoType );
+		pOwner->SetAmmoCount( MAX_PELLETS, m_iSecondaryAmmoType ); // Right-Click to set Weld Ammo from the Beta
 		BaseClass::Equip( pOwner );
 	}
 	void Drop(const Vector &vecVelocity)
@@ -570,6 +572,7 @@ private:
 	int			m_pelletHeld;
 	int			m_pelletAttract;
 	float		m_glueTime;
+	bool		m_bBlockPrimary; // Physgun Weld in place bool
 	CNetworkVar( bool, m_glueTouching );
 };
 
@@ -841,6 +844,8 @@ void CWeaponGravityGun::EffectUpdate( void )
 	{
 		m_gravCallback.ClearAutoAlign();
 	}
+	
+	NetworkStateChanged();
 }
 
 void CWeaponGravityGun::SoundCreate( void )
@@ -1213,10 +1218,11 @@ void CWeaponGravityGun::DetachObject( void )
 void CWeaponGravityGun::AttachObject( CBaseEntity *pObject, const Vector& start, const Vector &end, float distance )
 {
 	m_hObject = pObject;
-	m_useDown = false;
+	//m_useDown = false; // Not required per TheMaster
 	IPhysicsObject *pPhysics = pObject ? (pObject->VPhysicsGetObject()) : NULL;
 	if ( pPhysics && pObject->GetMoveType() == MOVETYPE_VPHYSICS )
 	{
+		pPhysics->EnableMotion(true); // Un-freezes the objects motion after being right-clicked
 		m_distance = distance;
 
 		m_gravCallback.AttachEntity( pObject, pPhysics, end );
@@ -1255,6 +1261,9 @@ void CWeaponGravityGun::AttachObject( CBaseEntity *pObject, const Vector& start,
 //=========================================================
 void CWeaponGravityGun::PrimaryAttack( void )
 {
+	if (m_bBlockPrimary) {
+		return;
+	}
 	if ( !m_active )
 	{
 		SendWeaponAnim( ACT_VM_PRIMARYATTACK );
@@ -1270,9 +1279,25 @@ void CWeaponGravityGun::PrimaryAttack( void )
 
 void CWeaponGravityGun::SecondaryAttack( void )
 {
+	/*m_flNextSecondaryAttack = gpGlobals->curtime + 0.1;
+	if ( m_active )
+	{
+		EffectDestroy();
+		SoundDestroy();
+		return;
+	}*/
+	
+	// This allows you to freeze models in place
 	m_flNextSecondaryAttack = gpGlobals->curtime + 0.1;
 	if ( m_active )
 	{
+		if (m_hObject) {
+			IPhysicsObject *phys = m_hObject->VPhysicsGetObject();
+			if (phys) {
+				phys->EnableMotion(false); // Right click to freeze an object
+				m_bBlockPrimary = true;
+			}
+		}
 		EffectDestroy();
 		SoundDestroy();
 		return;
@@ -1346,6 +1371,7 @@ void CWeaponGravityGun::WeaponIdle( void )
 	if ( HasWeaponIdleTimeElapsed() )
 	{
 		SendWeaponAnim( ACT_VM_IDLE );
+		}
 		if ( m_active )
 		{
 			CBaseEntity *pObject = m_hObject;
@@ -1364,6 +1390,8 @@ void CWeaponGravityGun::WeaponIdle( void )
 			EffectDestroy();
 			SoundDestroy();
 		}
+	else {
+		m_bBlockPrimary = false; // Allows the physgun to work after freezing an object via right-click
 	}
 }
 
@@ -1422,6 +1450,7 @@ bool CWeaponGravityGun::Reload( void )
 	return false;
 }
 
+/*
 #define NUM_COLLISION_TESTS 2500
 void CC_CollisionTest( const CCommand &args )
 {
@@ -1521,3 +1550,4 @@ void CC_CollisionTest( const CCommand &args )
 #endif
 }
 static ConCommand collision_test("collision_test", CC_CollisionTest, "Tests collision system", FCVAR_CHEAT );
+*/

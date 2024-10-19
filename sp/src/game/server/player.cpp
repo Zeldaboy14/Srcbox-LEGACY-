@@ -69,6 +69,8 @@
 #include "dt_utlvector_send.h"
 #include "vote_controller.h"
 #include "ai_speech.h"
+//#include "ai_speech.h"
+
 
 #if defined USES_ECON_ITEMS
 #include "econ_wearable.h"
@@ -190,6 +192,7 @@ ConVar  sv_player_net_suppress_usercommands( "sv_player_net_suppress_usercommand
 ConVar  sv_player_display_usercommand_errors( "sv_player_display_usercommand_errors", "0", FCVAR_CHEAT, "1 = Display warning when command values are out-of-range. 2 = Spew invalid ranges." );
 
 ConVar  player_debug_print_damage( "player_debug_print_damage", "0", FCVAR_CHEAT, "When true, print amount and type of all damage received by player to console." );
+ConVar	sk_player_weapons( "sk_player_weapons","0" ); // Give All Weapons
 
 
 void CC_GiveCurrentAmmo( void )
@@ -5038,6 +5041,57 @@ void CBasePlayer::Spawn( void )
 	UpdateLastKnownArea();
 
 	m_weaponFiredTimer.Invalidate();
+	//if (sk_player_weapons.GetBool())
+	//{
+		// Give the player everything!
+		/*EquipSuit();
+		GiveAmmo( 255,	"Pistol");
+		GiveAmmo( 255,	"AR2");
+		GiveAmmo( 255,	"SMG1");
+		GiveAmmo( 255,	"Buckshot");
+		GiveAmmo( 32,	"357" );
+		//#ifdef HL2_EPISODIC
+		//GiveAmmo( 5,	"Hopwire" );
+		//#endif		
+		GiveNamedItem( "weapon_smg1" );
+		GiveNamedItem( "weapon_crowbar" );
+		GiveNamedItem( "weapon_pistol" );
+		GiveNamedItem( "weapon_ar2" );
+		GiveNamedItem( "weapon_shotgun" );
+		GiveNamedItem( "weapon_357" );	
+		GiveNamedItem( "item_suit" );
+		//GiveNamedItem(" weapon_physgun");
+		EquipSuit();*/
+
+		// Give the player everything! Copied from the debug entry, as we need this for Srcbox because of the Single Player Branch
+		EquipSuit();
+		GiveAmmo(255, "Pistol");
+		GiveAmmo(255, "AR2");
+		GiveAmmo(5, "AR2AltFire");
+		GiveAmmo(255, "SMG1");
+		GiveAmmo(255, "Buckshot");
+		GiveAmmo(3, "smg1_grenade");
+		GiveAmmo(3, "rpg_round");
+		GiveAmmo(5, "grenade");
+		GiveAmmo(32, "357");
+		GiveAmmo(16, "XBowBolt");
+#ifdef HL2_EPISODIC
+		GiveAmmo(5, "Hopwire");
+#endif		
+		GiveNamedItem("weapon_smg1");
+		GiveNamedItem("weapon_frag");
+		GiveNamedItem("weapon_crowbar");
+		GiveNamedItem("weapon_pistol");
+		GiveNamedItem("weapon_ar2");
+		GiveNamedItem("weapon_shotgun");
+		GiveNamedItem("weapon_physcannon");
+		GiveNamedItem("weapon_physgun");
+		GiveNamedItem("weapon_bugbait");
+		GiveNamedItem("weapon_rpg");
+		GiveNamedItem("weapon_357");
+		GiveNamedItem("weapon_crossbow");
+		EquipSuit();
+	//}
 }
 
 void CBasePlayer::Activate( void )
@@ -6158,6 +6212,7 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 		GiveNamedItem( "weapon_ar2" );
 		GiveNamedItem( "weapon_shotgun" );
 		GiveNamedItem( "weapon_physcannon" );
+		GiveNamedItem(" weapon_physgun");
 		GiveNamedItem( "weapon_bugbait" );
 		GiveNamedItem( "weapon_rpg" );
 		GiveNamedItem( "weapon_357" );

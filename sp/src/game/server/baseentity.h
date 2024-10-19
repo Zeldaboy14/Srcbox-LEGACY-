@@ -84,6 +84,62 @@ class CSkyCamera;
 class CEntityMapData;
 class INextBot;
 
+// Half-Life 1
+
+typedef enum _fieldtypes_hl1
+{
+	FIELD_FLOATHL1 = 0,		// Any floating point value
+	FIELD_STRINGHL1,			// A string ID (return from ALLOC_STRING)
+	FIELD_ENTITYHL1,			// An entity offset (EOFFSET)
+	FIELD_CLASSPTRHL1,			// CBaseEntity *
+	FIELD_EHANDLEHL1,			// Entity handle
+	FIELD_EVARSHL1,			// EVARS *
+	FIELD_EDICTHL1,			// edict_t *, or edict_t *  (same thing)
+	FIELD_VECTORHL1,			// Any vector
+	FIELD_POSITION_VECTORHL1,	// A world coordinate (these are fixed up across level transitions automagically)
+	FIELD_POINTERHL1,			// Arbitrary data pointer... to be removed, use an array of FIELD_CHARACTER
+	FIELD_INTEGERHL1,			// Any integer or enum
+	FIELD_FUNCTIONHL1,			// A class function pointer (Think, Use, etc)
+	FIELD_BOOLEANHL1,			// boolean, implemented as an int, I may use this as a hint for compression
+	FIELD_SHORTHL1,			// 2 byte integer
+	FIELD_CHARACTERHL1,		// a byte
+	FIELD_TIMEHL1,				// a floating point time (these are fixed up automatically too!)
+	FIELD_MODELNAMEHL1,		// Engine string that is a model name (needs precache)
+	FIELD_SOUNDNAMEHL1,		// Engine string that is a sound name (needs precache)
+
+	FIELD_TYPECOUNTHL1,		// MUST BE LAST
+} FIELDTYPEHL1;
+
+//#define DEFINE_FIELD_HL1(type,name,fieldtype)			_FIELD(type, name, fieldtype, 1, 0)
+//#define DEFINE_FIELD(name,fieldtype)			_FIELD(name, fieldtype, 1,  FTYPEDESC_SAVE, NULL, 0 )
+
+// Passed to pfnKeyValue
+typedef struct KeyValueData_s
+{
+	char	*szClassName;	// in: entity classname
+	char	*szKeyName;		// in: name of key
+	char	*szValue;		// in: value of key
+	int32	fHandled;		// out: DLL sets to true if key-value pair was understood
+} KeyValueData_HL1;
+
+typedef struct
+{
+	FIELDTYPEHL1		fieldTypeHL1;
+	char			*fieldName;
+	int				fieldOffset;
+	short			fieldSize;
+	short			flags;
+} TYPEDESCRIPTION;
+
+#if !defined(offsetof)  && !defined(GNUC)
+#define offsetof(s,m)	(size_t)&(((s *)0)->m)
+#endif
+
+#define _FIELDHL1(type,name,fieldtypeHL1,count,flags)		{ fieldtypeHL1, #name, offsetof(type, name), count, flags }
+#define DEFINE_FIELDHL1(type,name,fieldtypeHL1)			_FIELDHL1(type, name, fieldtypeHL1, 1, 0)
+//#define DEFINE_FIELDHL1 DEFINE_KEYFIELD
+
+// End Half-Life 1
 
 typedef CUtlVector< CBaseEntity* > EntityList_t;
 

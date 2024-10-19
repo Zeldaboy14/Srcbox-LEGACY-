@@ -105,6 +105,7 @@ END_DATADESC()
 
 
 LINK_ENTITY_TO_CLASS(point_spotlight, CPointSpotlight);
+LINK_ENTITY_TO_CLASS(beam_spotlight, CPointSpotlight);
 
 //-----------------------------------------------------------------------------
 // Purpose: 

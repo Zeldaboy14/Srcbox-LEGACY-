@@ -9,12 +9,19 @@ Main features:
 Needing to be added:
   Alien Swarm shaders repoints (to fix l4d/2 stuff)
   Lua
+  Physgun rotation code
+  
+
 
 List of things used so far:
 https://web.archive.org/web/20150222194420/http://skew.telefragged.com/mods/hl2/ARGG/ - Physgun code originally used in Garry's Mod
 https://developer.valvesoftware.com/wiki/Adding_PBR_to_Your_Mod - PBR tutorial
 https://www.youtube.com/watch?v=nThOxf-N6D8 - PBR video tutorial
 
+Special thanks:
+	TheMaster974 - Advice and video tutorials
+	Shiro - Shader advice
+	And others who gave some valuable input
 
 
             ----ORIGINAL LICENSING------

@@ -22,6 +22,16 @@ class IShader;
 class ICvar;
 
 //-----------------------------------------------------------------------------
+// forward declarations
+//-----------------------------------------------------------------------------
+/*inline IShaderSystem *GetShaderSystem()
+{
+	extern IShaderSystem* g_pSLShaderSystem;
+	return g_pSLShaderSystem;
+}*/
+
+
+//-----------------------------------------------------------------------------
 // The standard implementation of CShaderDLL
 //-----------------------------------------------------------------------------
 class IShaderDLL

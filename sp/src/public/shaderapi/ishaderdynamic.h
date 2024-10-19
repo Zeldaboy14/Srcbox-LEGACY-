@@ -198,6 +198,7 @@ public:
 
 	// Sets the default *dynamic* state
 	virtual void SetDefaultState() = 0;
+	virtual void GetWorldSpaceCameraDirection( float* pDir ) const = 0;
 
 	// Get the current camera position in world space.
 	virtual void GetWorldSpaceCameraPosition( float* pPos ) const = 0;
@@ -329,6 +330,8 @@ public:
 
 	// Interface for mat system to tell shaderapi about color correction
 	virtual void GetCurrentColorCorrection( ShaderColorCorrectionInfo_t* pInfo ) = 0;
+	
+	virtual float GetFarZ() = 0;
 
 	virtual void SetPSNearAndFarZ( int pshReg ) = 0;
 
