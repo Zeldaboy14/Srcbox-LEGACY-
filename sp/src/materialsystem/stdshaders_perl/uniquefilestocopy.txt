@@ -1,0 +1,6 @@
+..\..\devtools\bin\d3dx9_33.dll 
+..\..\dx10sdk\utilities\dx9_30\dx_proxy.dll 
+C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\shadercompile.exe 
+C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\shadercompile_dll.dll 
+C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\tier0.dll 
+C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\vstdlib.dll 

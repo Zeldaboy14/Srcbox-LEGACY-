@@ -2232,3 +2232,46 @@ void CBaseVSShader::DrawEqualDepthToDestAlpha( void )
 	Assert( 0 ); //probably just needs a shader update to the latest
 #endif
 }
+
+//-----------------------------------------------------------------------------
+// Draws a snapshot
+//-----------------------------------------------------------------------------
+/*void CBaseShader::Draw( bool bMakeActualDrawCall )
+{
+	// You forgot to call PI_EndCommandBuffer
+	Assert( !s_bBuildingInstanceCommandBuffer );
+
+	if ( IsSnapshotting() )
+	{
+		// Turn off transparency if we're asked to....
+		if (g_pConfig->bNoTransparency && 
+			((s_ppParams[FLAGS]->GetIntValue() & MATERIAL_VAR_NO_DEBUG_OVERRIDE) == 0))
+		{
+			s_pShaderShadow->EnableDepthWrites( true );
+ 			s_pShaderShadow->EnableBlending( false );
+		}
+
+		GetShaderSystem()->TakeSnapshot();
+
+		// Automagically add skinning + vertex lighting
+		if ( !s_pInstanceDataPtr[s_nPassCount] )
+		{
+			bool bIsSkinning = CShader_IsFlag2Set( s_ppParams, MATERIAL_VAR2_SUPPORTS_HW_SKINNING );
+			bool bIsVertexLit = CShader_IsFlag2Set( s_ppParams, MATERIAL_VAR2_LIGHTING_VERTEX_LIT );
+			if ( bIsSkinning || bIsVertexLit )
+			{
+				PI_BeginCommandBuffer();
+				
+				// NOTE: EndCommandBuffer will insert the appropriate commands
+				PI_EndCommandBuffer();
+			}
+		}
+	}
+	else
+	{
+		GetShaderSystem()->DrawSnapshot( s_pInstanceDataPtr[s_nPassCount] ? 
+			s_pInstanceDataPtr[s_nPassCount]->m_pCommandBuffer : NULL, bMakeActualDrawCall );
+	}
+
+	++s_nPassCount;
+}*/

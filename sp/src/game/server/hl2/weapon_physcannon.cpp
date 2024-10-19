@@ -65,6 +65,13 @@ ConVar player_throwforce( "player_throwforce", "1000" );
 ConVar physcannon_dmg_glass( "physcannon_dmg_glass", "15" );
 ConVar physcannon_right_turrets( "physcannon_right_turrets", "0" );
 
+// adnan
+// added the console variable for setting the rotation mode
+// 1 = absolute, 2 = relative
+// UPDATE: is this a non-cheat variable? appears to be fine
+ConVar physcannon_rotate("physcannon_rotate", "1");
+// end adnan
+
 extern ConVar hl2_normspeed;
 extern ConVar hl2_walkspeed;
 
@@ -507,6 +514,12 @@ private:
 	bool			m_bHasPreferredCarryAngles;
 	float			m_flDistanceOffset;
 
+	// adnan
+	// set up the modified pickup angles... allow the player to rotate the object in their grip
+	QAngle		m_vecRotatedCarryAngles;
+	bool			m_bHasRotatedCarryAngles;
+	// end adnan
+
 	QAngle			m_attachedAnglesPlayerSpace;
 	Vector			m_attachedPositionObjectSpace;
 
@@ -537,6 +550,11 @@ BEGIN_SIMPLE_DATADESC( CGrabController )
 	DEFINE_FIELD( m_angleAlignment, FIELD_FLOAT ),
 	DEFINE_FIELD( m_vecPreferredCarryAngles, FIELD_VECTOR ),
 	DEFINE_FIELD( m_bHasPreferredCarryAngles, FIELD_BOOLEAN ),
+	// adnan
+	// set up the fields for our added vars
+	DEFINE_FIELD(m_vecRotatedCarryAngles, FIELD_VECTOR),
+	DEFINE_FIELD(m_bHasRotatedCarryAngles, FIELD_BOOLEAN),
+	// end adnan
 	DEFINE_FIELD( m_flDistanceOffset, FIELD_FLOAT ),
 	DEFINE_FIELD( m_attachedAnglesPlayerSpace, FIELD_VECTOR ),
 	DEFINE_FIELD( m_attachedPositionObjectSpace, FIELD_VECTOR ),
@@ -564,6 +582,14 @@ CGrabController::CGrabController( void )
 	m_attachedEntity = NULL;
 	m_vecPreferredCarryAngles = vec3_angle;
 	m_bHasPreferredCarryAngles = false;
+
+	// adnan
+	// initialize our added vars
+	m_vecRotatedCarryAngles = vec3_angle;
+	m_bHasRotatedCarryAngles = false;
+	// end adnan
+
+
 	m_flDistanceOffset = 0;
 	// NVNT constructing m_pControllingPlayer to NULL
 	m_pControllingPlayer = NULL;
@@ -794,6 +820,11 @@ void CGrabController::AttachEntity( CBasePlayer *pPlayer, CBaseEntity *pEntity, 
 		m_attachedAnglesPlayerSpace = AlignAngles( m_attachedAnglesPlayerSpace, m_angleAlignment );
 	}
 
+	// adnan
+	// we need to grab the preferred/non preferred carry angles here for the rotatedcarryangles
+	m_vecRotatedCarryAngles = m_attachedAnglesPlayerSpace;
+	// end adnan
+
 	// Ragdolls don't offset this way
 	if ( dynamic_cast<CRagdollProp*>(pEntity) )
 	{
@@ -810,6 +841,11 @@ void CGrabController::AttachEntity( CBasePlayer *pPlayer, CBaseEntity *pEntity, 
 	{
 		m_bHasPreferredCarryAngles = pProp->GetPropDataAngles( "preferred_carryangles", m_vecPreferredCarryAngles );
 		m_flDistanceOffset = pProp->GetCarryDistanceOffset();
+
+		// adnan
+		// we need to grab the preferred/non preferred carry angles here for the rotatedcarryangles
+		m_vecRotatedCarryAngles = TransformAnglesToPlayerSpace(m_vecPreferredCarryAngles, pPlayer);
+		// end adnan
 	}
 	else
 	{
@@ -1348,6 +1384,16 @@ protected:
 
 	CNetworkVar( bool, m_bIsCurrentlyUpgrading );
 	CNetworkVar( float, m_flTimeForceView );
+
+	// adnan
+	// UPDATE: these two booleans can be collapsed into one
+	//  - we only check for (m_bIsCurrentlyHolding && m_bIsCurrentlyRotating)...
+	//    - should double check this
+	// this is how we tell the client that we are indeed holding something
+	CNetworkVar( bool, m_bIsCurrentlyHolding );
+	// this is how we tell if we're rotating what we're holding
+	CNetworkVar( bool, m_bIsCurrentlyRotating );
+	// end adnan
 
 	float	m_flElementDebounce;
 	float	m_flElementPosition;
@@ -2828,6 +2874,54 @@ bool CGrabController::UpdateObject( CBasePlayer *pPlayer, float flError )
 							0.0f );
 	}
 
+	// adnan
+	// if we've been rotating it, set it to its proper new angles (change m_attachedAnglesPlayerSpace while modifier)
+	//Pickup_GetRotatedCarryAngles( pEntity, pPlayer, pPlayer->EntityToWorldTransform(), angles );
+	if (physcannon_rotate.GetInt())
+	{
+		// added the ... && (mousedx | mousedy) so we dont have to calculate if no mouse movement
+		// UPDATE: m_vecRotatedCarryAngles has become a temp variable... can be cleaned up by using actual temp vars
+		if (m_bHasRotatedCarryAngles && (pPlayer->GetCurrentCommand()->mousedx || pPlayer->GetCurrentCommand()->mousedy))
+		{
+			if (physcannon_rotate.GetInt() == 1)
+			{
+				// method I: fixed orientation
+				m_attachedAnglesPlayerSpace[YAW] += pPlayer->GetCurrentCommand()->mousedx;
+				m_attachedAnglesPlayerSpace[PITCH] += pPlayer->GetCurrentCommand()->mousedy;
+				//m_vecRotatedCarryAngles[ROLL] = 0;
+			}
+			else if (physcannon_rotate.GetInt() == 2)
+			{
+				// method II: relative orientation
+				// UPDATE: this could definitely be cleaned up
+				//  - need to go from angles to VMatrix instead of angles -> matrix3x4_t -> VMatrix
+				//    OR
+				//  - need to have a general MatrixMultiply() and MatrixToAngles() for matrix3x4_t's
+				matrix3x4_t deltaRotation, currentRotation;
+				VMatrix vDeltaRotation, vCurrentRotation, vNewRotation;
+
+				AngleMatrix(m_attachedAnglesPlayerSpace, currentRotation);
+
+				m_vecRotatedCarryAngles[YAW] = pPlayer->GetCurrentCommand()->mousedx;
+				m_vecRotatedCarryAngles[PITCH] = pPlayer->GetCurrentCommand()->mousedy;
+				m_vecRotatedCarryAngles[ROLL] = 0;
+				AngleMatrix(m_vecRotatedCarryAngles, deltaRotation);
+
+				vDeltaRotation.CopyFrom3x4(deltaRotation);
+				vCurrentRotation.CopyFrom3x4(currentRotation);
+
+				MatrixMultiply(vDeltaRotation, vCurrentRotation, vNewRotation);
+				MatrixToAngles(vNewRotation, m_attachedAnglesPlayerSpace);
+			}
+		}
+		else {
+			// get the current angles and transform them into player space
+			// then back into object space?
+			// or transform them based on the player rotation
+		}
+	}
+	// end adnan
+
 	QAngle angles = TransformAnglesFromPlayerSpace( m_attachedAnglesPlayerSpace, pPlayer );
 	
 	// If it has a preferred orientation, update to ensure we're still oriented correctly.
@@ -3348,6 +3442,56 @@ void CWeaponPhysCannon::ItemPostFrame()
 			}
 		}
 	}
+
+	// adnan
+	// this is where we check if we're orbiting the object
+
+	// if we're holding something and pressing use,
+	//  then set us in the orbiting state
+	//  - this will indicate to OverrideMouseInput that we should zero the input and update our delta angles
+	//  UPDATE: not anymore.  now this just sets our state variables.
+	//DevMsg("CHECKING FOR ROTATED SHIT\n");
+	if (m_grabController.GetAttached()) {
+
+		m_bIsCurrentlyHolding = true;
+
+		if ((pOwner->m_nButtons & IN_USE)) {
+			//DevMsg("HAVE ROTATED ANGLES, NOW SETTING BOOL\n");
+			m_grabController.m_bHasRotatedCarryAngles = true;
+
+			// did we JUST hit use?
+			//  if so, grab the current angles to begin with as the rotated angles
+			if (!(pOwner->m_afButtonLast & IN_USE)) {
+				m_grabController.m_vecRotatedCarryAngles = m_grabController.GetAttached()->GetAbsAngles();
+			}
+
+			m_bIsCurrentlyRotating = true;
+		}
+		else {
+			// did we just let go of use?
+			if ((pOwner->m_afButtonLast & IN_USE)) {
+				/*
+				Vector pos;
+				QAngle ang;
+				m_grabController.GetAttached()->VPhysicsGetObject()->GetPosition( &pos, &ang );
+				m_grabController.SetTargetPosition(pos, m_grabController.m_vecRotatedCarryAngles);
+				*/
+				//m_grabController.GetAttached()->VPhysicsGetObject()->SetPosition( pos, m_grabController.m_vecRotatedCarryAngles, false );
+				//m_grabController.m_vecRotatedCarryAngles = m_grabController.GetAttached()->GetAbsAngles();
+			}
+
+			m_grabController.m_bHasRotatedCarryAngles = false;
+
+			m_bIsCurrentlyRotating = false;
+		}
+	}
+	else {
+		m_bIsCurrentlyHolding = false;
+		m_bIsCurrentlyRotating = false;
+
+		m_grabController.m_bHasRotatedCarryAngles = false;
+	}
+	// end adnan
 
 	// Update our idle effects (flickers, etc)
 	DoEffectIdle();

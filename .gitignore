@@ -54,3 +54,6 @@ config.cfg
 # shader files
 *.tmp
 
+# Mod stuff
+sp/game/mod_hl2/
+*.vs/

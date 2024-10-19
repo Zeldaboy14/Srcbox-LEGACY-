@@ -133,6 +133,23 @@ public:
 
 	// Are we currently taking a snapshot?
 	bool IsSnapshotting() const;
+	
+	// Methods related to building per-instance ("PI_") command buffers
+	//void PI_BeginCommandBuffer();
+	//void PI_EndCommandBuffer();
+	//void PI_SetPixelShaderAmbientLightCube( int nFirstRegister );
+	//void PI_SetPixelShaderLocalLighting( int nFirstRegister );
+	//void PI_SetPixelShaderAmbientLightCubeLuminance( int nFirstRegister );
+	//void PI_SetPixelShaderGlintDamping( int nFirstRegister );
+	//void PI_SetVertexShaderAmbientLightCube( /*int nFirstRegister*/ );
+	//void PI_SetModulationPixelShaderDynamicState( int nRegister );
+	//void PI_SetModulationPixelShaderDynamicState_LinearColorSpace_LinearScale( int nRegister, float scale );
+	//void PI_SetModulationPixelShaderDynamicState_LinearScale( int nRegister, float scale );
+	//void PI_SetModulationPixelShaderDynamicState_LinearScale_ScaleInW( int nRegister, float scale );
+	//void PI_SetModulationPixelShaderDynamicState_LinearColorSpace( int nRegister );
+	//void PI_SetModulationPixelShaderDynamicState_Identity( int nRegister );
+	//void PI_SetModulationVertexShaderDynamicState( void );
+	//void PI_SetModulationVertexShaderDynamicState_LinearScale( float flScale );
 
 	// Gets at the current materialvar flags
 	int CurrentMaterialVarFlags() const;

@@ -426,6 +426,10 @@ enum MaterialVarFlags2_t
 	MATERIAL_VAR2_USES_VERTEXID								= (1 << 17),
 	MATERIAL_VAR2_SUPPORTS_HW_SKINNING						= (1 << 18),
 	MATERIAL_VAR2_SUPPORTS_FLASHLIGHT						= (1 << 19),
+	MATERIAL_VAR2_USE_GBUFFER0                              = (1 << 20),
+	MATERIAL_VAR2_USE_GBUFFER1                              = (1 << 21),
+	MATERIAL_VAR2_SELFILLUMMASK								= (1 << 22),
+	MATERIAL_VAR2_SUPPORTS_TESSELLATION						= (1 << 23)
 };
 
 

@@ -884,7 +884,8 @@ void CVradStaticPropMgr::UnserializeStaticProps()
 
 	if ( g_GameLumps.GetGameLumpVersion( handle ) != GAMELUMP_STATIC_PROPS_VERSION )
 	{
-		Error( "Cannot load the static props... encountered a stale map version. Re-vbsp the map." );
+		//Error( "Cannot load the static props... encountered a stale map version. Re-vbsp the map." );
+		Warning( "Static Prop version doesn't equal 6... You might wanna fix that, bud :3" );
 	}
 
 	if ( g_GameLumps.GetGameLump( handle ) )

@@ -23,6 +23,7 @@
 #include <KeyValues.h>
 #include "filesystem.h"
 #include "matsys_controls/matsyscontrols.h"
+#include "IMyPanel.h"
 
 #ifdef SIXENSE
 #include "sixense/in_sixense.h"
@@ -197,6 +198,9 @@ void VGui_CreateGlobalPanels( void )
 {
 	VPANEL gameToolParent = enginevgui->GetPanel( PANEL_CLIENTDLL_TOOLS );
 	VPANEL toolParent = enginevgui->GetPanel( PANEL_TOOLS );
+	VPANEL gameParent = enginevgui->GetPanel( PANEL_CLIENTDLL );
+	VPANEL GameUiDll = enginevgui->GetPanel( PANEL_GAMEUIDLL);
+	mypanel->Create(GameUiDll);
 #if defined( TRACK_BLOCKING_IO )
 	VPANEL gameDLLPanel = enginevgui->GetPanel( PANEL_GAMEDLL );
 #endif
@@ -204,6 +208,7 @@ void VGui_CreateGlobalPanels( void )
 	internalCenterPrint->Create( gameToolParent );
 	loadingdisc->Create( gameToolParent );
 	messagechars->Create( gameToolParent );
+	mypanel->Create(gameParent);
 
 	// Debugging or related tool
 	fps->Create( toolParent );
@@ -240,6 +245,7 @@ void VGui_Shutdown()
 	messagechars->Destroy();
 	loadingdisc->Destroy();
 	internalCenterPrint->Destroy();
+	mypanel->Destroy();
 
 	if ( g_pClientMode )
 	{
