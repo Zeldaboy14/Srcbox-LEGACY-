@@ -1,3 +1,23 @@
+Srcbox - Open-soured sandbox built using Source SDK 2013
+A free mod ment to be an open-sourced version of garrys mod, with improvments
+
+Main features:
+  Physgun repaired and code to freeze things (ammo removed)
+  PBR Support
+  Some L4D/2 Entities not supported by Garry's Mod
+
+Needing to be added:
+  Alien Swarm shaders repoints (to fix l4d/2 stuff)
+  Lua
+
+List of things used so far:
+https://web.archive.org/web/20150222194420/http://skew.telefragged.com/mods/hl2/ARGG/ - Physgun code originally used in Garry's Mod
+https://developer.valvesoftware.com/wiki/Adding_PBR_to_Your_Mod - PBR tutorial
+https://www.youtube.com/watch?v=nThOxf-N6D8 - PBR video tutorial
+
+
+
+            ----ORIGINAL LICENSING------
                SOURCE 1 SDK LICENSE
 
 Source SDK Copyright(c) Valve Corp.  
@@ -6,7 +26,7 @@ THIS DOCUMENT DESCRIBES A CONTRACT BETWEEN YOU AND VALVE
 CORPORATION ("Valve").  PLEASE READ IT BEFORE DOWNLOADING OR USING 
 THE SOURCE ENGINE SDK ("SDK"). BY DOWNLOADING AND/OR USING THE 
 SOURCE ENGINE SDK YOU ACCEPT THIS LICENSE. IF YOU DO NOT AGREE TO 
-THE TERMS OF THIS LICENSE PLEASE DON’T DOWNLOAD OR USE THE SDK.  
+THE TERMS OF THIS LICENSE PLEASE DONâ€™T DOWNLOAD OR USE THE SDK.  
 
   You may, free of charge, download and use the SDK to develop a modified Valve game 
 running on the Source engine.  You may distribute your modified Valve game in source and 
