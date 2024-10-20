@@ -97,10 +97,10 @@ VS_OUTPUT main( const VS_INPUT v )
 	vRefractPos = (vRefractPos + vProjPos.w) * 0.5f;
 
 	// Scalar light attenuation
-	o.lightAtten.x = GetVertexAttenForLight_SDK07( worldPos, 0 );
-	o.lightAtten.y = GetVertexAttenForLight_SDK07( worldPos, 1 );
-	o.lightAtten.z = GetVertexAttenForLight_SDK07( worldPos, 2 );
-	o.lightAtten.w = GetVertexAttenForLight_SDK07( worldPos, 3 );
+	//o.lightAtten.x = GetVertexAttenForLight_SDK07( worldPos, 0 );
+	//o.lightAtten.y = GetVertexAttenForLight_SDK07( worldPos, 1 );
+	//o.lightAtten.z = GetVertexAttenForLight_SDK07( worldPos, 2 );
+	//o.lightAtten.w = GetVertexAttenForLight_SDK07( worldPos, 3 );
 
 	// Compute fog based on the position
 	float3 vWorldPos = mul( v.vPos, cModel[0] );

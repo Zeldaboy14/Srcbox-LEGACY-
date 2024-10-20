@@ -91,10 +91,10 @@
     <ClCompile Include="infected_dx9.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sdk_unlittwotexture_dx9.cpp">
+    <ClCompile Include="cloak_blended_pass_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cloak_blended_pass_helper.cpp">
+    <ClCompile Include="sdk_unlittwotexture_dx9.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

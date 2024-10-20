@@ -1,6 +1,0 @@
-..\..\..\game\hl2\shaders\fxc\pbr_vs30.vcs
-..\..\..\game\hl2\shaders\fxc\pbr_ps30.vcs
-..\..\..\game\hl2\shaders\fxc\SDK_cloak_vs30.vcs
-..\..\..\game\hl2\shaders\fxc\SDK_cloak_ps30.vcs
-..\..\..\game\hl2\shaders\fxc\sdk_cloak_blended_pass_ps30.vcs
-..\..\..\game\hl2\shaders\fxc\sdk_cloak_blended_pass_vs30.vcs

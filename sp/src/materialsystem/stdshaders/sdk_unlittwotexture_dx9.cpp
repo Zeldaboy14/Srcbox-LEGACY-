@@ -17,6 +17,11 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+//#define GetWorldSpaceCameraDirection ( float* pPos ) const = 0;
+//#define GetFarZ 1
+#define IS_FLAG2_SET( _flag )	CShader_IsFlag2Set( params, _flag )
+//#define MATERIAL_VAR2_USE_GBUFFER1 (1 << 21)
+
 DEFINE_FALLBACK_SHADER( SDK_UnlitTwoTexture, SDK_UnlitTwoTexture_DX9 )
 BEGIN_VS_SHADER( SDK_UnlitTwoTexture_DX9, "Help for SDK_UnlitTwoTexture_DX9" )
 	BEGIN_SHADER_PARAMS
@@ -178,31 +183,31 @@ BEGIN_VS_SHADER( SDK_UnlitTwoTexture_DX9, "Help for SDK_UnlitTwoTexture_DX9" )
 				pShaderShadow->VertexShaderVertexFormat( flags, nTexCoordCount, NULL, userDataSize );
 
 				// If this is set, blend with the alpha channels of the textures and modulation color
-				//bool bTranslucent = IsAlphaModulating() || IS_FLAG_SET( MATERIAL_VAR_TRANSLUCENT ) || TextureIsTranslucent( BASETEXTURE, true ) || TextureIsTranslucent( TEXTURE2, true );
+				bool bTranslucent = IsAlphaModulating() || IS_FLAG_SET( MATERIAL_VAR_TRANSLUCENT ) || TextureIsTranslucent( BASETEXTURE, true ) || TextureIsTranslucent( TEXTURE2, true );
 
-				//int nLightingPreviewMode = IS_FLAG2_SET( MATERIAL_VAR2_USE_GBUFFER0 ) + 2 * IS_FLAG2_SET( MATERIAL_VAR2_USE_GBUFFER1 );
+				int nLightingPreviewMode = IS_FLAG2_SET( MATERIAL_VAR2_USE_GBUFFER0 ) + 2 * IS_FLAG2_SET( MATERIAL_VAR2_USE_GBUFFER1 );
 
-				DECLARE_STATIC_VERTEX_SHADER(sdk_unlittwotexture_vs20);
-				SET_STATIC_VERTEX_SHADER(sdk_unlittwotexture_vs20);
+				//DECLARE_STATIC_VERTEX_SHADER(sdk_unlittwotexture_vs20);
+				//SET_STATIC_VERTEX_SHADER(sdk_unlittwotexture_vs20);
 
 				if( g_pHardwareConfig->SupportsPixelShaders_2_b() )
 				{
 					DECLARE_STATIC_PIXEL_SHADER(sdk_unlittwotexture_ps20b);
-					//SET_STATIC_PIXEL_SHADER_COMBO( TRANSLUCENT, bTranslucent );
-					//SET_STATIC_PIXEL_SHADER_COMBO( LIGHTING_PREVIEW, nLightingPreviewMode );
+					SET_STATIC_PIXEL_SHADER_COMBO( TRANSLUCENT, bTranslucent );
+					SET_STATIC_PIXEL_SHADER_COMBO( LIGHTING_PREVIEW, nLightingPreviewMode );
 					SET_STATIC_PIXEL_SHADER(sdk_unlittwotexture_ps20b);
 				}
 				else
 				{
 					DECLARE_STATIC_PIXEL_SHADER(sdk_unlittwotexture_ps20);
-					//SET_STATIC_PIXEL_SHADER_COMBO( TRANSLUCENT, bTranslucent );
-					//SET_STATIC_PIXEL_SHADER_COMBO( LIGHTING_PREVIEW, nLightingPreviewMode );
+					SET_STATIC_PIXEL_SHADER_COMBO( TRANSLUCENT, bTranslucent );
+					SET_STATIC_PIXEL_SHADER_COMBO( LIGHTING_PREVIEW, nLightingPreviewMode );
 					SET_STATIC_PIXEL_SHADER(sdk_unlittwotexture_ps20);
 				}
 
 				DefaultFog();
 
-				//pShaderShadow->EnableAlphaWrites( bFullyOpaque );
+				pShaderShadow->EnableAlphaWrites( bFullyOpaque );
 
 				//PI_BeginCommandBuffer();
 				//PI_SetModulationPixelShaderDynamicState_LinearColorSpace( 1 );
@@ -223,19 +228,23 @@ BEGIN_VS_SHADER( SDK_UnlitTwoTexture_DX9, "Help for SDK_UnlitTwoTexture_DX9" )
 				pShaderAPI->SetPixelShaderConstant( PSREG_EYEPOS_SPEC_EXPONENT, vEyePos_SpecExponent, 1 );
 
 				int numBones = pShaderAPI->GetCurrentNumBones();
+				//virtual float GetFarZ() = 0;
+
+				#define GetFarZ 0
 
 				bool bWorldNormal = pShaderAPI->GetIntRenderingParameter( INT_RENDERPARM_ENABLE_FIXED_LIGHTING ) == ENABLE_FIXED_LIGHTING_OUTPUTNORMAL_AND_DEPTH;
-				if ( IsPC() && bWorldNormal )
+				/*if ( IsPC() && bWorldNormal )
 				{
 					float vEyeDir[4];
-					pShaderAPI->GetWorldSpaceCameraDirection( vEyeDir );
+					pShaderAPI->GetWorldSpaceCameraPosition(vEyeDir);
 
-					float flFarZ = pShaderAPI->GetFarZ();
+					//float flFarZ = pShaderAPI->GetFarZ();
+					float flFarZ = pShaderAPI->GetFarZ;
 					vEyeDir[0] /= flFarZ;	// Divide by farZ for SSAO algorithm
 					vEyeDir[1] /= flFarZ;
 					vEyeDir[2] /= flFarZ;
 					pShaderAPI->SetVertexShaderConstant( VERTEX_SHADER_SHADER_SPECIFIC_CONST_4, vEyeDir );
-				}
+				}*/
 
 				MaterialFogMode_t fogType = pShaderAPI->GetSceneFogMode();
 				int fogIndex = (fogType == MATERIAL_FOG_LINEAR_BELOW_FOG_Z) ? 1 : 0;
@@ -244,7 +253,7 @@ BEGIN_VS_SHADER( SDK_UnlitTwoTexture_DX9, "Help for SDK_UnlitTwoTexture_DX9" )
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( SKINNING,  numBones > 0 );
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG, fogIndex);
 				SET_DYNAMIC_VERTEX_SHADER_COMBO( COMPRESSED_VERTS, (int)vertexCompression );
-				//SET_DYNAMIC_VERTEX_SHADER_COMBO( WORLD_NORMAL, bWorldNormal );
+				SET_DYNAMIC_VERTEX_SHADER_COMBO( WORLD_NORMAL, bWorldNormal );
 				SET_DYNAMIC_VERTEX_SHADER(sdk_unlittwotexture_vs20);
 
 				if( g_pHardwareConfig->SupportsPixelShaders_2_b() )
@@ -252,16 +261,16 @@ BEGIN_VS_SHADER( SDK_UnlitTwoTexture_DX9, "Help for SDK_UnlitTwoTexture_DX9" )
 					DECLARE_DYNAMIC_PIXEL_SHADER(sdk_unlittwotexture_ps20b);
 					SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo());
 					SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, bFullyOpaque && pShaderAPI->ShouldWriteDepthToDestAlpha() );
-					SET_DYNAMIC_PIXEL_SHADER_COMBO(LIGHTING_PREVIEW,
-						pShaderAPI->GetIntRenderingParameter(INT_RENDERPARM_ENABLE_FIXED_LIGHTING));
+					//SET_DYNAMIC_PIXEL_SHADER_COMBO(LIGHTING_PREVIEW,
+						//pShaderAPI->GetIntRenderingParameter(INT_RENDERPARM_ENABLE_FIXED_LIGHTING));
 					SET_DYNAMIC_PIXEL_SHADER(sdk_unlittwotexture_ps20b);
 				}
 				else
 				{
 					DECLARE_DYNAMIC_PIXEL_SHADER(sdk_unlittwotexture_ps20);
 					SET_DYNAMIC_PIXEL_SHADER_COMBO(PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo());
-					SET_DYNAMIC_PIXEL_SHADER_COMBO(LIGHTING_PREVIEW,
-						pShaderAPI->GetIntRenderingParameter(INT_RENDERPARM_ENABLE_FIXED_LIGHTING));
+					//SET_DYNAMIC_PIXEL_SHADER_COMBO(LIGHTING_PREVIEW,
+						//pShaderAPI->GetIntRenderingParameter(INT_RENDERPARM_ENABLE_FIXED_LIGHTING));
 					SET_DYNAMIC_PIXEL_SHADER(sdk_unlittwotexture_ps20);
 				}
 			}

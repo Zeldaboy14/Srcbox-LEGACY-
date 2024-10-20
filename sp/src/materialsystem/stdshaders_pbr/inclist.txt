@@ -1,6 +1,0 @@
-fxctmp9_tmp\pbr_vs30.inc
-fxctmp9_tmp\pbr_ps30.inc
-fxctmp9_tmp\SDK_cloak_vs30.inc
-fxctmp9_tmp\SDK_cloak_ps30.inc
-fxctmp9_tmp\sdk_cloak_blended_pass_ps30.inc
-fxctmp9_tmp\sdk_cloak_blended_pass_vs30.inc
