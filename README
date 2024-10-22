@@ -1,5 +1,6 @@
 Srcbox - Open-soured sandbox built using Source SDK 2013
 A free mod ment to be an open-sourced version of garrys mod, with improvments
+Note: This is a Singleplayer Mod. I do not plan a multiplayer version at all
 
 Main features:
   Physgun repaired and code to freeze things (ammo removed)
@@ -7,7 +8,7 @@ Main features:
   Some L4D/2 Entities not supported by Garry's Mod
 
 Needing to be added:
-  Alien Swarm shaders repoints (to fix l4d/2 stuff)
+  Shaders repoints (to fix l4d/2 stuff)
   Lua
   Physgun rotation code
   
@@ -17,6 +18,8 @@ List of things used so far:
 https://web.archive.org/web/20150222194420/http://skew.telefragged.com/mods/hl2/ARGG/ - Physgun code originally used in Garry's Mod
 https://developer.valvesoftware.com/wiki/Adding_PBR_to_Your_Mod - PBR tutorial
 https://www.youtube.com/watch?v=nThOxf-N6D8 - PBR video tutorial
+Alien Swarm SDK (Fixs for stock shaders)
+Menu stuff pulled from Gmod 10 (Placeholders)
 
 Special thanks:
 	TheMaster974 - Advice and video tutorials
