@@ -23,6 +23,7 @@ Menu stuff pulled from Gmod 10 (Placeholders)
 https://github.com/mapbase-source/source-sdk-2013 - Alien Swarm/L4D/2 func_precipitation port (effect.cpp and other necessary files)
 https://nbc66.medium.com/creating-a-dynamic-music-system-in-your-main-menu-for-your-source-engine-mod-2a0689c3e02e - dynamic music system
 https://developer.valvesoftware.com/wiki/Animated_Menu_Background - video on main menu
+https://github.com/jonathonracz/swarm-deferred-src/blob/c617517d07612f7a61bfe61da7a2114c38c36322/game/client/deferred/materialsystem_passthru.cpp#L138 - material passthru for shaders (not functioning)
 
 Special thanks:
 	TheMaster974 - Advice and video tutorials
