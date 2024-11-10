@@ -46,6 +46,12 @@
     <Filter Include="VPC Scripts">
       <UniqueIdentifier>{A40EE377-781A-C6B9-0C7C-B3BE118D248E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Shared">
+      <UniqueIdentifier>{e5887da7-5965-40cf-8c30-b99b26537c04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine">
+      <UniqueIdentifier>{006c61c0-b12a-4ba6-9574-704e5d7b4558}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\lib\public\bitmap.lib">
@@ -1883,6 +1889,15 @@
     <ClInclude Include="IMyPanel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="hl2\materialsystem_passthru.h">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClInclude>
+    <ClInclude Include="menu_background.h">
+      <Filter>Public Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\engine\modelloader.h">
+      <Filter>Source Files\engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mp3player.cpp">
@@ -3375,6 +3390,18 @@
     </ClCompile>
     <ClCompile Include="MyPanel.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\materialsystem_passthru.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="hl2\music_system.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="menu_background.cpp">
+      <Filter>Source Files\HL2 DLL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\engine\mapver.cpp">
+      <Filter>Source Files\engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

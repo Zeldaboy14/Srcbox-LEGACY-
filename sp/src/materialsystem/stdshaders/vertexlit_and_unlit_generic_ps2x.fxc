@@ -95,7 +95,6 @@ const float4 g_FlashlightAttenuationFactors	    : register( c22 );
 const HALF3 g_FlashlightPos						: register( c23 );
 const float4x4 g_FlashlightWorldToTexture		: register( c24 ); // through c27
 
-
 sampler BaseTextureSampler		: register( s0 );
 sampler EnvmapSampler			: register( s1 );
 sampler DetailSampler			: register( s2 );
@@ -152,9 +151,15 @@ const float4 g_GlowColor : register( c6 );
 const float4 g_DistanceAlphaParams : register( c7 );
 #define SOFT_MASK_MAX g_DistanceAlphaParams.x
 #define SOFT_MASK_MIN g_DistanceAlphaParams.y
+#define g_flBaseAlphaEnvMapMaskBias g_DistanceAlphaParams.z // Swarm additions
+#define g_flBaseAlphaEnvMapMaskScale g_DistanceAlphaParams.w // Swarm additions
 
 const float4 g_OutlineColor : register( c8 );
 #define OUTLINE_COLOR g_OutlineColor
+
+//const float4 g_FresnelConstants					: register( c14 ); // Swarm additions
+#define g_fInverseBlendTintByBaseAlpha		g_ShaderControls.x // Swarm additions
+#define g_flBaseAlphaEnvMapMaskExp	g_DepthFeatheringConstants.w // Swarm Edditions
 
 const float4 g_OutlineParams : register( c9 );
 // these are ordered this way for optimal ps20 swizzling
@@ -327,7 +332,8 @@ float4 main( PS_INPUT i ) : COLOR
 
 	if( bBaseAlphaEnvmapMask )
 	{
-		specularFactor *= 1.0 - baseColor.a; // this blows!
+		//specularFactor *= 1.0 - baseColor.a; // this blows!
+		specularFactor *= saturate( g_flBaseAlphaEnvMapMaskScale * pow( baseColor.a, g_flBaseAlphaEnvMapMaskExp ) + g_flBaseAlphaEnvMapMaskBias );
 	}
 
 	float3 diffuseLighting = float3( 1.0f, 1.0f, 1.0f );
@@ -339,13 +345,14 @@ float4 main( PS_INPUT i ) : COLOR
 	float3 albedo = baseColor;
 	if (bBlendTintByBaseAlpha)
 	{
-		float3 tintedColor = albedo * g_DiffuseModulation.rgb;
-		tintedColor = lerp(tintedColor, g_DiffuseModulation.rgb, g_EnvmapTint_TintReplaceFactor.w);
-		albedo = lerp(albedo, tintedColor, baseColor.a);
+		//float3 tintedColor = albedo * g_DiffuseModulation.rgb;
+		//tintedColor = lerp(tintedColor, g_DiffuseModulation.rgb, g_EnvmapTint_TintReplaceFactor.w);
+		//albedo = lerp(albedo, tintedColor, baseColor.a);
+		diffuseLighting *= g_DiffuseModulation.rgb;
 	}
 	else
 	{
-		albedo = albedo * g_DiffuseModulation.rgb;
+		diffuseLighting *= lerp( float3( 1.0f, 1.0f, 1.0f ), g_DiffuseModulation.rgb, saturate( baseColor.a + g_fInverseBlendTintByBaseAlpha ) );
 	}
 
 	float alpha = g_DiffuseModulation.a;

@@ -4,5 +4,9 @@ fxctmp9_tmp\SDK_cloak_vs30.inc
 fxctmp9_tmp\SDK_cloak_ps30.inc
 fxctmp9_tmp\sdk_cloak_blended_pass_ps30.inc
 fxctmp9_tmp\sdk_cloak_blended_pass_vs30.inc
-fxctmp9_tmp\sdk_unlittwotexture_ps30.inc
-fxctmp9_tmp\sdk_unlittwotexture_vs30.inc
+fxctmp9_tmp\unlittwotexture_ps30.inc
+fxctmp9_tmp\unlittwotexture_vs30.inc
+fxctmp9_tmp\weapon_sheen_pass_ps30.inc
+fxctmp9_tmp\weapon_sheen_pass_vs30.inc
+fxctmp9_tmp\emissive_scroll_blended_pass_ps30.inc
+fxctmp9_tmp\emissive_scroll_blended_pass_vs30.inc

@@ -20,6 +20,9 @@ https://developer.valvesoftware.com/wiki/Adding_PBR_to_Your_Mod - PBR tutorial
 https://www.youtube.com/watch?v=nThOxf-N6D8 - PBR video tutorial
 Alien Swarm SDK (Fixs for stock shaders)
 Menu stuff pulled from Gmod 10 (Placeholders)
+https://github.com/mapbase-source/source-sdk-2013 - Alien Swarm/L4D/2 func_precipitation port (effect.cpp and other necessary files)
+https://nbc66.medium.com/creating-a-dynamic-music-system-in-your-main-menu-for-your-source-engine-mod-2a0689c3e02e - dynamic music system
+https://developer.valvesoftware.com/wiki/Animated_Menu_Background - video on main menu
 
 Special thanks:
 	TheMaster974 - Advice and video tutorials

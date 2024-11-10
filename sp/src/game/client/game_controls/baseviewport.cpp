@@ -17,6 +17,7 @@
 #include <cdll_client_int.h>
 #include <cdll_util.h>
 #include <globalvars_base.h>
+#include "../menu_background.h"
 
 // VGUI panel includes
 #include <vgui_controls/Panel.h>
@@ -152,6 +153,7 @@ CBaseViewport::CBaseViewport() : vgui::EditablePanel( NULL, "CBaseViewport")
 	SetSize( 10, 10 ); // Quiet "parent not sized yet" spew
 	gViewPortInterface = this;
 	m_bInitialized = false;
+	m_pMainMenuPanel = NULL;
 
 	m_GameuiFuncs = NULL;
 	m_GameEventManager = NULL;
@@ -221,6 +223,17 @@ void CBaseViewport::OnScreenSizeChanged(int iOldWide, int iOldTall)
 	{
 		ShowPanel( PANEL_SPECGUI, true );
 	}
+	bool bRestartMainMenuVideo = false;
+
+	if (m_pMainMenuPanel)
+		bRestartMainMenuVideo = m_pMainMenuPanel->IsVideoPlaying();
+
+	m_pMainMenuPanel = new CMainMenu(NULL, NULL);
+	//m_pMainMenuPanel->SetZPos(40);
+	m_pMainMenuPanel->SetVisible(false);
+
+	if (bRestartMainMenuVideo)
+		m_pMainMenuPanel->StartVideo();
 }
 
 void CBaseViewport::CreateDefaultPanels( void )
@@ -455,6 +468,11 @@ IViewPortPanel* CBaseViewport::GetActivePanel( void )
 void CBaseViewport::RemoveAllPanels( void)
 {
 	g_lastPanel = NULL;
+	if (m_pMainMenuPanel)
+	{
+		m_pMainMenuPanel->MarkForDeletion();
+		m_pMainMenuPanel = NULL;
+	}
 	for ( int i=0; i < m_Panels.Count(); i++ )
 	{
 		vgui::VPANEL vPanel = m_Panels[i]->GetVPanel();
@@ -470,11 +488,20 @@ void CBaseViewport::RemoveAllPanels( void)
 	m_Panels.Purge();
 	m_pActivePanel = NULL;
 	m_pLastActivePanel = NULL;
+
+	if (m_pMainMenuPanel)
+	{
+		m_pMainMenuPanel->MarkForDeletion();
+		m_pMainMenuPanel = NULL;
+	}
 }
 
 CBaseViewport::~CBaseViewport()
 {
 	m_bInitialized = false;
+	if (!m_bHasParent && m_pMainMenuPanel)
+		m_pMainMenuPanel->MarkForDeletion();
+	m_pMainMenuPanel = NULL;
 
 #ifndef _XBOX
 	if ( !m_bHasParent && m_pBackGround )
@@ -507,6 +534,11 @@ void CBaseViewport::Start( IGameUIFuncs *pGameUIFuncs, IGameEventManager2 * pGam
 	m_GameEventManager->AddListener( this, "game_newmap", false );
 	
 	m_bInitialized = true;
+
+	m_pMainMenuPanel = new CMainMenu(NULL, NULL);
+	//m_pMainMenuPanel->SetZPos(40);
+	m_pMainMenuPanel->SetVisible(false);
+	m_pMainMenuPanel->StartVideo();
 }
 
 /*
@@ -706,6 +738,24 @@ void CBaseViewport::ReloadScheme(const char *fromFile)
 int CBaseViewport::GetDeathMessageStartHeight( void )
 {
 	return YRES(2);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CBaseViewport::StartMainMenuVideo()
+{
+	if (m_pMainMenuPanel)
+		m_pMainMenuPanel->StartVideo();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CBaseViewport::StopMainMenuVideo()
+{
+	if (m_pMainMenuPanel)
+		m_pMainMenuPanel->StopVideo();
 }
 
 void CBaseViewport::Paint()

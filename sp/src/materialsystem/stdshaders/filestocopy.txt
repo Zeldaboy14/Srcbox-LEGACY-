@@ -1,15 +1,3 @@
-sdk_unlittwotexture_vs20.fxc
-common_fxc.h
-common_fog_vs_fxc.h
-common_pragmas.h
-common_hlsl_cpp_consts.h
-common_vs_fxc.h
-sdk_unlittwotexture_vs20.fxc
-common_fxc.h
-common_fog_vs_fxc.h
-common_pragmas.h
-common_hlsl_cpp_consts.h
-common_vs_fxc.h
 ..\..\devtools\bin\d3dx9_33.dll 
 ..\..\dx10sdk\utilities\dx9_30\dx_proxy.dll 
 C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\shadercompile.exe 

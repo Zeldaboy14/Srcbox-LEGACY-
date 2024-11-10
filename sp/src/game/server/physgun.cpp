@@ -34,6 +34,7 @@ ConVar phys_gunrotationspeed("phys_gunrotationspeed", "10");
 static int g_physgunBeam;
 #define PHYSGUN_BEAM_SPRITE		"sprites/physbeam.vmt"
 
+// Physgun Ammo. From the beta.
 //#define MAX_PELLETS	16
 #define MAX_PELLETS	60
 
@@ -486,8 +487,8 @@ public:
 	bool Reload( void );
 	void Equip( CBaseCombatCharacter *pOwner )
 	{
-		// add constraint ammo
-		pOwner->SetAmmoCount( MAX_PELLETS, m_iSecondaryAmmoType ); // Right-Click to set Weld Ammo from the Beta
+		// add constraint ammo. Disable to remove constraint ammo from game
+		//pOwner->SetAmmoCount( MAX_PELLETS, m_iSecondaryAmmoType ); // Right-Click to set Weld Ammo from the Beta
 		BaseClass::Equip( pOwner );
 	}
 	void Drop(const Vector &vecVelocity)
@@ -1441,7 +1442,7 @@ bool CWeaponGravityGun::Reload( void )
 
 	if ( pOwner->GetAmmoCount(m_iSecondaryAmmoType) != MAX_PELLETS )
 	{
-		pOwner->SetAmmoCount( MAX_PELLETS, m_iSecondaryAmmoType );
+		//pOwner->SetAmmoCount( MAX_PELLETS, m_iSecondaryAmmoType );
 		DeleteActivePellets();
 		WeaponSound( RELOAD );
 		return true;

@@ -801,4 +801,79 @@ float DepthFeathering( sampler DepthSampler, const float2 vScreenPos, float fPro
 #	endif
 }
 
+//Introduced in Alien Swarm
+#define FOGTYPE_RANGE				0
+
+#define PIXEL_FOG_TYPE_NONE -1 //MATERIAL_FOG_NONE is handled by PIXEL_FOG_TYPE_RANGE, this is for explicitly disabling fog in the shader
+#define PIXEL_FOG_TYPE_RANGE 0 //range+none packed together in ps2b. Simply none in ps20 (instruction limits)
+#define PIXEL_FOG_TYPE_HEIGHT 1
+
+const float4 cEyePos_WaterHeightW			: register(c2);
+#define cEyePos			cEyePos_WaterHeightW.xyz
+#define cWaterHeight	cEyePos_WaterHeightW.w
+
+const float4 cFogParams					: register(c16);
+#define cFogEndOverFogRange cFogParams.x
+// cFogParams.y unused
+#define cRadialFogMaxDensity cFogParams.z  //radial fog max density in fractional portion. height fog max density stored in integer portion and is multiplied by 1e10
+#define cOOFogRange cFogParams.w
+
+#define cRadialFogMaxDensity cFogParams.z  //radial fog max density in fractional portion. height fog max density stored in integer portion and is multiplied by 1e10
+
+
+float CalcPixelFogFactor( int iPIXELFOGTYPE, const float4 fogParams, const float3 vEyePos, const float3 vWorldPos, const float flProjPosZ )
+{
+	float retVal;
+	if ( iPIXELFOGTYPE == PIXEL_FOG_TYPE_NONE )
+	{
+		retVal = 0.0f;
+	}
+	if ( iPIXELFOGTYPE == PIXEL_FOG_TYPE_RANGE ) //range fog, or no fog depending on fog parameters
+	{
+		// This is one only path that we go down for L4D.
+		float flFogMaxDensity = fogParams.z;
+		float flFogEndOverRange = fogParams.x;
+		float flFogOORange = fogParams.w;
+		retVal = CalcRangeFogFactorNonFixedFunction( vWorldPos, vEyePos, flFogMaxDensity, flFogEndOverRange, flFogOORange );
+	}
+	else if ( iPIXELFOGTYPE == PIXEL_FOG_TYPE_HEIGHT ) //height fog
+	{
+		retVal = CalcWaterFogAlpha( fogParams.y, vEyePos.z, vWorldPos.z, flProjPosZ, fogParams.w );
+	}
+
+	return retVal;
+}
+
+float CalcPixelFogFactorSupportsVertexFog( int iPIXELFOGTYPE, const float4 fogParams, const float3 vEyePos, const float3 vWorldPos, const float flProjPosZ, const float flVertexFogFactor )
+{
+	#if ( DOPIXELFOG )
+	{
+		return CalcPixelFogFactor( iPIXELFOGTYPE, fogParams, vEyePos, vWorldPos, flProjPosZ );
+	}
+	#else
+	{
+		return flVertexFogFactor;
+	}
+	#endif
+}
+
+float CalcNonFixedFunctionFog( const float3 worldPos, const bool bWaterFog )
+{
+	if( !bWaterFog )
+	{
+		return CalcRangeFogFactorNonFixedFunction( worldPos, cEyePos, cRadialFogMaxDensity, cFogEndOverFogRange, cOOFogRange );
+	}
+	else
+	{
+		return 0.0f; //all done in the pixel shader as of ps20 (current min-spec)
+	}
+}
+
+float CalcNonFixedFunctionFog( const float3 worldPos, const int fogType )
+{
+	return CalcNonFixedFunctionFog( worldPos, fogType != FOGTYPE_RANGE );
+}
+
+// End Alien Swarm defines
+
 #endif //#ifndef COMMON_PS_FXC_H_

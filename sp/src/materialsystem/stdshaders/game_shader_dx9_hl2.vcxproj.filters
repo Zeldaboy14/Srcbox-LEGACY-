@@ -65,6 +65,33 @@
     <ClInclude Include="pbr_common_ps2_3_x.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="srcbox_shader_commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common_fog_ps_fxc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common_fog_vs_fxc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emissive_scroll_blended_pass_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="weapon_sheen_pass_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="flesh_interior_blended_pass_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vertexlitgeneric_dx9_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vertexlitgeneric_dx95_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="skin_dx9_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseVSShader.cpp">
@@ -94,7 +121,25 @@
     <ClCompile Include="cloak_blended_pass_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sdk_unlittwotexture_dx9.cpp">
+    <ClCompile Include="unlittwotexture_dx9.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="weapon_sheen_pass_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="emissive_scroll_blended_pass_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="flesh_interior_blended_pass_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="skin_dx9_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vertexlitgeneric_dx9.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vertexlitgeneric_dx9_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,7 +14,7 @@
 #include "weapon_sheen_pass_helper.h"
 
 
-BEGIN_VS_SHADER( VertexLitGeneric, "Help for VertexLitGeneric" )
+BEGIN_VS_SHADER( VertexLitGeneric_SDK, "Help for VertexLitGeneric" )
 	BEGIN_SHADER_PARAMS
 		SHADER_PARAM( ALBEDO, SHADER_PARAM_TYPE_TEXTURE, "shadertest/BaseTexture", "albedo (Base texture with no baked lighting)" )
 		SHADER_PARAM( COMPRESS, SHADER_PARAM_TYPE_TEXTURE, "shadertest/BaseTexture", "compression wrinklemap" )
@@ -58,6 +58,7 @@ BEGIN_VS_SHADER( VertexLitGeneric, "Help for VertexLitGeneric" )
 		SHADER_PARAM( INVERTPHONGMASK, SHADER_PARAM_TYPE_INTEGER, "0", "invert the phong mask (0=full phong, 1=no phong)" )
 		SHADER_PARAM( ENVMAPFRESNEL, SHADER_PARAM_TYPE_FLOAT, "0", "Degree to which Fresnel should be applied to env map" )
 		SHADER_PARAM( SELFILLUMMASK, SHADER_PARAM_TYPE_TEXTURE, "shadertest/BaseTexture", "If we bind a texture here, it overrides base alpha (if any) for self illum" )
+		SHADER_PARAM( BASEMAPLUMINANCEPHONGMASK, SHADER_PARAM_TYPE_INTEGER, "0", "indicates that the base luminance should be used to mask phong")
 
 	    // detail (multi-) texturing
 	    SHADER_PARAM( DETAILBLENDMODE, SHADER_PARAM_TYPE_INTEGER, "0", "mode for combining detail texture with base. 0=normal, 1= additive, 2=alpha blend detail over base, 3=crossfade" )
@@ -185,6 +186,8 @@ BEGIN_VS_SHADER( VertexLitGeneric, "Help for VertexLitGeneric" )
 		info.m_nDetailTextureCombineMode = DETAILBLENDMODE;
 		info.m_nDetailTextureBlendFactor = DETAILBLENDFACTOR;
 		info.m_nDetailTextureTransform = DETAILTEXTURETRANSFORM;
+
+		info.m_nBaseMapLuminancePhongMask = BASEMAPLUMINANCEPHONGMASK;
 
 		// Rim lighting parameters
 		info.m_nRimLight = RIMLIGHT;

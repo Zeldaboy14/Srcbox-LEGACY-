@@ -1,78 +1,110 @@
-default:  fxctmp9_tmp\pbr_vs30.inc shaders\fxc\pbr_vs30.vcs fxctmp9_tmp\pbr_ps30.inc shaders\fxc\pbr_ps30.vcs fxctmp9_tmp\SDK_cloak_vs30.inc shaders\fxc\SDK_cloak_vs30.vcs fxctmp9_tmp\SDK_cloak_ps30.inc shaders\fxc\SDK_cloak_ps30.vcs fxctmp9_tmp\sdk_cloak_blended_pass_ps30.inc shaders\fxc\sdk_cloak_blended_pass_ps30.vcs fxctmp9_tmp\sdk_cloak_blended_pass_vs30.inc shaders\fxc\sdk_cloak_blended_pass_vs30.vcs fxctmp9_tmp\sdk_unlittwotexture_ps30.inc shaders\fxc\sdk_unlittwotexture_ps30.vcs fxctmp9_tmp\sdk_unlittwotexture_vs30.inc shaders\fxc\sdk_unlittwotexture_vs30.vcs
+default:  fxctmp9_tmp\pbr_vs30.inc shaders\fxc\pbr_vs30.vcs fxctmp9_tmp\pbr_ps30.inc shaders\fxc\pbr_ps30.vcs fxctmp9_tmp\SDK_cloak_vs30.inc shaders\fxc\SDK_cloak_vs30.vcs fxctmp9_tmp\SDK_cloak_ps30.inc shaders\fxc\SDK_cloak_ps30.vcs fxctmp9_tmp\sdk_cloak_blended_pass_ps30.inc shaders\fxc\sdk_cloak_blended_pass_ps30.vcs fxctmp9_tmp\sdk_cloak_blended_pass_vs30.inc shaders\fxc\sdk_cloak_blended_pass_vs30.vcs fxctmp9_tmp\unlittwotexture_ps30.inc shaders\fxc\unlittwotexture_ps30.vcs fxctmp9_tmp\unlittwotexture_vs30.inc shaders\fxc\unlittwotexture_vs30.vcs fxctmp9_tmp\weapon_sheen_pass_ps30.inc shaders\fxc\weapon_sheen_pass_ps30.vcs fxctmp9_tmp\weapon_sheen_pass_vs30.inc shaders\fxc\weapon_sheen_pass_vs30.vcs fxctmp9_tmp\emissive_scroll_blended_pass_ps30.inc shaders\fxc\emissive_scroll_blended_pass_ps30.vcs fxctmp9_tmp\emissive_scroll_blended_pass_vs30.inc shaders\fxc\emissive_scroll_blended_pass_vs30.vcs
 
-fxctmp9_tmp\pbr_vs30.inc shaders\fxc\pbr_vs30.vcs: pbr_vs30.fxc common_hlsl_cpp_consts.h common_vs_fxc.h common_fxc.h common_pragmas.h
+fxctmp9_tmp\pbr_vs30.inc shaders\fxc\pbr_vs30.vcs: pbr_vs30.fxc common_vs_fxc.h common_pragmas.h common_hlsl_cpp_consts.h common_fxc.h
 	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." pbr_vs30.fxc-----pbr_vs30
 	echo pbr_vs30.fxc>> filestocopy.txt
-	echo common_hlsl_cpp_consts.h>> filestocopy.txt
 	echo common_vs_fxc.h>> filestocopy.txt
-	echo common_fxc.h>> filestocopy.txt
 	echo common_pragmas.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
+	echo common_fxc.h>> filestocopy.txt
 
-fxctmp9_tmp\pbr_ps30.inc shaders\fxc\pbr_ps30.vcs: pbr_ps30.fxc common_vertexlitgeneric_dx9.h pbr_common_ps2_3_x.h common_lightmappedgeneric_fxc.h common_pragmas.h common_fxc.h shader_constant_register_map.h common_ps_fxc.h common_hlsl_cpp_consts.h common_flashlight_fxc.h
+fxctmp9_tmp\pbr_ps30.inc shaders\fxc\pbr_ps30.vcs: pbr_ps30.fxc common_flashlight_fxc.h pbr_common_ps2_3_x.h common_hlsl_cpp_consts.h shader_constant_register_map.h common_lightmappedgeneric_fxc.h common_vertexlitgeneric_dx9.h common_fxc.h common_pragmas.h common_ps_fxc.h
 	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." pbr_ps30.fxc-----pbr_ps30
 	echo pbr_ps30.fxc>> filestocopy.txt
-	echo common_vertexlitgeneric_dx9.h>> filestocopy.txt
-	echo pbr_common_ps2_3_x.h>> filestocopy.txt
-	echo common_lightmappedgeneric_fxc.h>> filestocopy.txt
-	echo common_pragmas.h>> filestocopy.txt
-	echo common_fxc.h>> filestocopy.txt
-	echo shader_constant_register_map.h>> filestocopy.txt
-	echo common_ps_fxc.h>> filestocopy.txt
-	echo common_hlsl_cpp_consts.h>> filestocopy.txt
 	echo common_flashlight_fxc.h>> filestocopy.txt
+	echo pbr_common_ps2_3_x.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
+	echo shader_constant_register_map.h>> filestocopy.txt
+	echo common_lightmappedgeneric_fxc.h>> filestocopy.txt
+	echo common_vertexlitgeneric_dx9.h>> filestocopy.txt
+	echo common_fxc.h>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
+	echo common_ps_fxc.h>> filestocopy.txt
 
-fxctmp9_tmp\SDK_cloak_vs30.inc shaders\fxc\SDK_cloak_vs30.vcs: SDK_cloak_vs20.fxc common_hlsl_cpp_consts.h common_vs_fxc.h common_fxc.h common_pragmas.h
+fxctmp9_tmp\SDK_cloak_vs30.inc shaders\fxc\SDK_cloak_vs30.vcs: SDK_cloak_vs20.fxc common_fxc.h common_pragmas.h common_hlsl_cpp_consts.h common_vs_fxc.h
 	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." SDK_cloak_vs20.fxc-----SDK_cloak_vs30
 	echo SDK_cloak_vs20.fxc>> filestocopy.txt
-	echo common_hlsl_cpp_consts.h>> filestocopy.txt
-	echo common_vs_fxc.h>> filestocopy.txt
 	echo common_fxc.h>> filestocopy.txt
 	echo common_pragmas.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
+	echo common_vs_fxc.h>> filestocopy.txt
 
-fxctmp9_tmp\SDK_cloak_ps30.inc shaders\fxc\SDK_cloak_ps30.vcs: SDK_cloak_ps2x.fxc common_ps_fxc.h common_hlsl_cpp_consts.h shader_constant_register_map.h common_vertexlitgeneric_dx9.h common_pragmas.h common_fxc.h
+fxctmp9_tmp\SDK_cloak_ps30.inc shaders\fxc\SDK_cloak_ps30.vcs: SDK_cloak_ps2x.fxc shader_constant_register_map.h common_hlsl_cpp_consts.h common_fxc.h common_vertexlitgeneric_dx9.h common_ps_fxc.h common_pragmas.h
 	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." SDK_cloak_ps2x.fxc-----SDK_cloak_ps30
 	echo SDK_cloak_ps2x.fxc>> filestocopy.txt
-	echo common_ps_fxc.h>> filestocopy.txt
-	echo common_hlsl_cpp_consts.h>> filestocopy.txt
 	echo shader_constant_register_map.h>> filestocopy.txt
-	echo common_vertexlitgeneric_dx9.h>> filestocopy.txt
-	echo common_pragmas.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
 	echo common_fxc.h>> filestocopy.txt
+	echo common_vertexlitgeneric_dx9.h>> filestocopy.txt
+	echo common_ps_fxc.h>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
 
-fxctmp9_tmp\sdk_cloak_blended_pass_ps30.inc shaders\fxc\sdk_cloak_blended_pass_ps30.vcs: sdk_cloak_blended_pass_ps2x.fxc common_hlsl_cpp_consts.h common_ps_fxc.h common_fxc.h common_vertexlitgeneric_dx9.h common_pragmas.h
+fxctmp9_tmp\sdk_cloak_blended_pass_ps30.inc shaders\fxc\sdk_cloak_blended_pass_ps30.vcs: sdk_cloak_blended_pass_ps2x.fxc common_pragmas.h common_hlsl_cpp_consts.h common_ps_fxc.h common_vertexlitgeneric_dx9.h common_fxc.h
 	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." sdk_cloak_blended_pass_ps2x.fxc-----sdk_cloak_blended_pass_ps30
 	echo sdk_cloak_blended_pass_ps2x.fxc>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
 	echo common_hlsl_cpp_consts.h>> filestocopy.txt
 	echo common_ps_fxc.h>> filestocopy.txt
-	echo common_fxc.h>> filestocopy.txt
 	echo common_vertexlitgeneric_dx9.h>> filestocopy.txt
-	echo common_pragmas.h>> filestocopy.txt
+	echo common_fxc.h>> filestocopy.txt
 
-fxctmp9_tmp\sdk_cloak_blended_pass_vs30.inc shaders\fxc\sdk_cloak_blended_pass_vs30.vcs: sdk_cloak_blended_pass_vs20.fxc common_vs_fxc.h common_hlsl_cpp_consts.h common_pragmas.h common_fxc.h
+fxctmp9_tmp\sdk_cloak_blended_pass_vs30.inc shaders\fxc\sdk_cloak_blended_pass_vs30.vcs: sdk_cloak_blended_pass_vs20.fxc common_fxc.h common_vs_fxc.h common_pragmas.h common_hlsl_cpp_consts.h
 	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." sdk_cloak_blended_pass_vs20.fxc-----sdk_cloak_blended_pass_vs30
 	echo sdk_cloak_blended_pass_vs20.fxc>> filestocopy.txt
-	echo common_vs_fxc.h>> filestocopy.txt
-	echo common_hlsl_cpp_consts.h>> filestocopy.txt
-	echo common_pragmas.h>> filestocopy.txt
 	echo common_fxc.h>> filestocopy.txt
+	echo common_vs_fxc.h>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
 
-fxctmp9_tmp\sdk_unlittwotexture_ps30.inc shaders\fxc\sdk_unlittwotexture_ps30.vcs: sdk_unlittwotexture_ps2x.fxc common_vertexlitgeneric_dx9.h shader_constant_register_map.h common_fog_ps_fxc.h common_pragmas.h common_fxc.h common_ps_fxc.h common_hlsl_cpp_consts.h
-	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." sdk_unlittwotexture_ps2x.fxc-----sdk_unlittwotexture_ps30
-	echo sdk_unlittwotexture_ps2x.fxc>> filestocopy.txt
+fxctmp9_tmp\unlittwotexture_ps30.inc shaders\fxc\unlittwotexture_ps30.vcs: unlittwotexture_ps2x.fxc common_fxc.h common_vertexlitgeneric_dx9.h common_ps_fxc.h common_pragmas.h shader_constant_register_map.h common_hlsl_cpp_consts.h
+	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." unlittwotexture_ps2x.fxc-----unlittwotexture_ps30
+	echo unlittwotexture_ps2x.fxc>> filestocopy.txt
+	echo common_fxc.h>> filestocopy.txt
 	echo common_vertexlitgeneric_dx9.h>> filestocopy.txt
-	echo shader_constant_register_map.h>> filestocopy.txt
-	echo common_fog_ps_fxc.h>> filestocopy.txt
-	echo common_pragmas.h>> filestocopy.txt
-	echo common_fxc.h>> filestocopy.txt
 	echo common_ps_fxc.h>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
+	echo shader_constant_register_map.h>> filestocopy.txt
 	echo common_hlsl_cpp_consts.h>> filestocopy.txt
 
-fxctmp9_tmp\sdk_unlittwotexture_vs30.inc shaders\fxc\sdk_unlittwotexture_vs30.vcs: sdk_unlittwotexture_vs20.fxc common_fxc.h common_fog_vs_fxc.h common_pragmas.h common_hlsl_cpp_consts.h common_vs_fxc.h
-	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." sdk_unlittwotexture_vs20.fxc-----sdk_unlittwotexture_vs30
-	echo sdk_unlittwotexture_vs20.fxc>> filestocopy.txt
+fxctmp9_tmp\unlittwotexture_vs30.inc shaders\fxc\unlittwotexture_vs30.vcs: unlittwotexture_vs20.fxc common_fxc.h common_vs_fxc.h common_hlsl_cpp_consts.h common_pragmas.h
+	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." unlittwotexture_vs20.fxc-----unlittwotexture_vs30
+	echo unlittwotexture_vs20.fxc>> filestocopy.txt
 	echo common_fxc.h>> filestocopy.txt
-	echo common_fog_vs_fxc.h>> filestocopy.txt
+	echo common_vs_fxc.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
+
+fxctmp9_tmp\weapon_sheen_pass_ps30.inc shaders\fxc\weapon_sheen_pass_ps30.vcs: weapon_sheen_pass_ps2x.fxc common_fxc.h common_vertexlitgeneric_dx9.h common_hlsl_cpp_consts.h common_pragmas.h common_ps_fxc.h
+	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." weapon_sheen_pass_ps2x.fxc-----weapon_sheen_pass_ps30
+	echo weapon_sheen_pass_ps2x.fxc>> filestocopy.txt
+	echo common_fxc.h>> filestocopy.txt
+	echo common_vertexlitgeneric_dx9.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
+	echo common_ps_fxc.h>> filestocopy.txt
+
+fxctmp9_tmp\weapon_sheen_pass_vs30.inc shaders\fxc\weapon_sheen_pass_vs30.vcs: weapon_sheen_pass_vs20.fxc common_vs_fxc.h common_hlsl_cpp_consts.h common_pragmas.h common_fxc.h
+	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." weapon_sheen_pass_vs20.fxc-----weapon_sheen_pass_vs30
+	echo weapon_sheen_pass_vs20.fxc>> filestocopy.txt
+	echo common_vs_fxc.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
+	echo common_fxc.h>> filestocopy.txt
+
+fxctmp9_tmp\emissive_scroll_blended_pass_ps30.inc shaders\fxc\emissive_scroll_blended_pass_ps30.vcs: emissive_scroll_blended_pass_ps2x.fxc common_pragmas.h common_hlsl_cpp_consts.h common_ps_fxc.h common_vertexlitgeneric_dx9.h common_fxc.h
+	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." emissive_scroll_blended_pass_ps2x.fxc-----emissive_scroll_blended_pass_ps30
+	echo emissive_scroll_blended_pass_ps2x.fxc>> filestocopy.txt
 	echo common_pragmas.h>> filestocopy.txt
 	echo common_hlsl_cpp_consts.h>> filestocopy.txt
+	echo common_ps_fxc.h>> filestocopy.txt
+	echo common_vertexlitgeneric_dx9.h>> filestocopy.txt
+	echo common_fxc.h>> filestocopy.txt
+
+fxctmp9_tmp\emissive_scroll_blended_pass_vs30.inc shaders\fxc\emissive_scroll_blended_pass_vs30.vcs: emissive_scroll_blended_pass_vs20.fxc common_vs_fxc.h common_hlsl_cpp_consts.h common_pragmas.h common_fxc.h
+	perl ..\..\devtools\bin\fxc_prep.pl   -source "..\.." emissive_scroll_blended_pass_vs20.fxc-----emissive_scroll_blended_pass_vs30
+	echo emissive_scroll_blended_pass_vs20.fxc>> filestocopy.txt
 	echo common_vs_fxc.h>> filestocopy.txt
+	echo common_hlsl_cpp_consts.h>> filestocopy.txt
+	echo common_pragmas.h>> filestocopy.txt
+	echo common_fxc.h>> filestocopy.txt
 

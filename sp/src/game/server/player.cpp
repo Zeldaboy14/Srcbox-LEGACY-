@@ -4881,96 +4881,96 @@ void CBasePlayer::InitialSpawn( void )
 //-----------------------------------------------------------------------------
 // Purpose: Called everytime the player respawns
 //-----------------------------------------------------------------------------
-void CBasePlayer::Spawn( void )
+void CBasePlayer::Spawn(void)
 {
 	// Needs to be done before weapons are given
-	if ( Hints() )
+	if (Hints())
 	{
 		Hints()->ResetHints();
 	}
 
-	SetClassname( "player" );
+	SetClassname("player");
 
 	// Shared spawning code..
 	SharedSpawn();
-	
-	SetSimulatedEveryTick( true );
-	SetAnimatedEveryTick( true );
 
-	m_ArmorValue		= SpawnArmorValue();
-	SetBlocksLOS( false );
-	m_iMaxHealth		= m_iHealth;
+	SetSimulatedEveryTick(true);
+	SetAnimatedEveryTick(true);
+
+	m_ArmorValue = SpawnArmorValue();
+	SetBlocksLOS(false);
+	m_iMaxHealth = m_iHealth;
 
 	// Clear all flags except for FL_FULLEDICT
-	if ( GetFlags() & FL_FAKECLIENT )
+	if (GetFlags() & FL_FAKECLIENT)
 	{
 		ClearFlags();
-		AddFlag( FL_CLIENT | FL_FAKECLIENT );
+		AddFlag(FL_CLIENT | FL_FAKECLIENT);
 	}
 	else
 	{
 		ClearFlags();
-		AddFlag( FL_CLIENT );
+		AddFlag(FL_CLIENT);
 	}
 
-	AddFlag( FL_AIMTARGET );
+	AddFlag(FL_AIMTARGET);
 
-	m_AirFinished	= gpGlobals->curtime + AIRTIME;
-	m_nDrownDmgRate	= DROWNING_DAMAGE_INITIAL;
-	
- // only preserve the shadow flag
+	m_AirFinished = gpGlobals->curtime + AIRTIME;
+	m_nDrownDmgRate = DROWNING_DAMAGE_INITIAL;
+
+	// only preserve the shadow flag
 	int effects = GetEffects() & EF_NOSHADOW;
-	SetEffects( effects );
+	SetEffects(effects);
 
 	IncrementInterpolationFrame();
 
 	// Initialize the fog and postprocess controllers.
 	InitFogController();
 
-	m_DmgTake		= 0;
-	m_DmgSave		= 0;
-	m_bitsHUDDamage		= -1;
-	m_bitsDamageType	= 0;
-	m_afPhysicsFlags	= 0;
+	m_DmgTake = 0;
+	m_DmgSave = 0;
+	m_bitsHUDDamage = -1;
+	m_bitsDamageType = 0;
+	m_afPhysicsFlags = 0;
 
 	m_idrownrestored = m_idrowndmg;
 
-	SetFOV( this, 0 );
+	SetFOV(this, 0);
 
-	m_flNextDecalTime	= 0;// let this player decal as soon as he spawns.
+	m_flNextDecalTime = 0;// let this player decal as soon as he spawns.
 
 	m_flgeigerDelay = gpGlobals->curtime + 2.0;	// wait a few seconds until user-defined message registrations
-												// are recieved by all clients
-	
-	m_flFieldOfView		= 0.766;// some NPCs use this to determine whether or not the player is looking at them.
+	// are recieved by all clients
+
+	m_flFieldOfView = 0.766;// some NPCs use this to determine whether or not the player is looking at them.
 
 	m_vecAdditionalPVSOrigin = vec3_origin;
 	m_vecCameraPVSOrigin = vec3_origin;
 
-	if ( !m_fGameHUDInitialized )
-		g_pGameRules->SetDefaultPlayerTeam( this );
+	if (!m_fGameHUDInitialized)
+		g_pGameRules->SetDefaultPlayerTeam(this);
 
-	g_pGameRules->GetPlayerSpawnSpot( this );
+	g_pGameRules->GetPlayerSpawnSpot(this);
 
 	m_Local.m_bDucked = false;// This will persist over round restart if you hold duck otherwise. 
 	m_Local.m_bDucking = false;
-    SetViewOffset( VEC_VIEW_SCALED( this ) );
+	SetViewOffset(VEC_VIEW_SCALED(this));
 	Precache();
-	
+
 	m_bitsDamageType = 0;
 	m_bitsHUDDamage = -1;
-	SetPlayerUnderwater( false );
+	SetPlayerUnderwater(false);
 
 	m_iTrain = TRAIN_NEW;
-	
-	m_HackedGunPos		= Vector( 0, 32, 0 );
+
+	m_HackedGunPos = Vector(0, 32, 0);
 
 	m_iBonusChallenge = sv_bonus_challenge.GetInt();
-	sv_bonus_challenge.SetValue( 0 );
+	sv_bonus_challenge.SetValue(0);
 
-	if ( m_iPlayerSound == SOUNDLIST_EMPTY )
+	if (m_iPlayerSound == SOUNDLIST_EMPTY)
 	{
-		Msg( "Couldn't alloc player sound slot!\n" );
+		Msg("Couldn't alloc player sound slot!\n");
 	}
 
 	SetThink(NULL);
@@ -4980,54 +4980,54 @@ void CBasePlayer::Spawn( void )
 
 	m_lastx = m_lasty = 0;
 
-	Q_strncpy( m_szLastPlaceName.GetForModify(), "", MAX_PLACE_NAME_LENGTH );
-	
-	CSingleUserRecipientFilter user( this );
-	enginesound->SetPlayerDSP( user, 0, false );
+	Q_strncpy(m_szLastPlaceName.GetForModify(), "", MAX_PLACE_NAME_LENGTH);
+
+	CSingleUserRecipientFilter user(this);
+	enginesound->SetPlayerDSP(user, 0, false);
 
 	CreateViewModel();
 
-	SetCollisionGroup( COLLISION_GROUP_PLAYER );
+	SetCollisionGroup(COLLISION_GROUP_PLAYER);
 
 	// if the player is locked, make sure he stays locked
-	if ( m_iPlayerLocked )
+	if (m_iPlayerLocked)
 	{
 		m_iPlayerLocked = false;
 		LockPlayerInPlace();
 	}
 
-	if ( GetTeamNumber() != TEAM_SPECTATOR )
+	if (GetTeamNumber() != TEAM_SPECTATOR)
 	{
 		StopObserverMode();
 	}
 	else
 	{
-		StartObserverMode( m_iObserverLastMode );
+		StartObserverMode(m_iObserverLastMode);
 	}
 
 	StopReplayMode();
 
 	// Clear any screenfade
-	color32 nothing = {0,0,0,255};
-	UTIL_ScreenFade( this, nothing, 0, 0, FFADE_IN | FFADE_PURGE );
+	color32 nothing = { 0, 0, 0, 255 };
+	UTIL_ScreenFade(this, nothing, 0, 0, FFADE_IN | FFADE_PURGE);
 
-	g_pGameRules->PlayerSpawn( this );
+	g_pGameRules->PlayerSpawn(this);
 
 	m_flLaggedMovementValue = 1.0f;
 	m_vecSmoothedVelocity = vec3_origin;
-	InitVCollision( GetAbsOrigin(), GetAbsVelocity() );
+	InitVCollision(GetAbsOrigin(), GetAbsVelocity());
 
 #if !defined( TF_DLL )
-	IGameEvent *event = gameeventmanager->CreateEvent( "player_spawn" );
-	
-	if ( event )
+	IGameEvent *event = gameeventmanager->CreateEvent("player_spawn");
+
+	if (event)
 	{
-		event->SetInt("userid", GetUserID() );
-		gameeventmanager->FireEvent( event );
+		event->SetInt("userid", GetUserID());
+		gameeventmanager->FireEvent(event);
 	}
 #endif
 
-	RumbleEffect( RUMBLE_STOP_ALL, 0, RUMBLE_FLAGS_NONE );
+	RumbleEffect(RUMBLE_STOP_ALL, 0, RUMBLE_FLAGS_NONE);
 
 	// Calculate this immediately
 	m_nVehicleViewSavedFrame = 0;
@@ -5041,30 +5041,15 @@ void CBasePlayer::Spawn( void )
 	UpdateLastKnownArea();
 
 	m_weaponFiredTimer.Invalidate();
-	//if (sk_player_weapons.GetBool())
-	//{
-		// Give the player everything!
-		/*EquipSuit();
-		GiveAmmo( 255,	"Pistol");
-		GiveAmmo( 255,	"AR2");
-		GiveAmmo( 255,	"SMG1");
-		GiveAmmo( 255,	"Buckshot");
-		GiveAmmo( 32,	"357" );
-		//#ifdef HL2_EPISODIC
-		//GiveAmmo( 5,	"Hopwire" );
-		//#endif		
-		GiveNamedItem( "weapon_smg1" );
-		GiveNamedItem( "weapon_crowbar" );
-		GiveNamedItem( "weapon_pistol" );
-		GiveNamedItem( "weapon_ar2" );
-		GiveNamedItem( "weapon_shotgun" );
-		GiveNamedItem( "weapon_357" );	
-		GiveNamedItem( "item_suit" );
-		//GiveNamedItem(" weapon_physgun");
-		EquipSuit();*/
 
+	//if (menu)
+	//{
+		//ConVar	sk_player_weapons("sk_player_weapons", "1"); // Give All Weapons
+	//}
+
+	if (sk_player_weapons.GetBool())
+	{
 		// Give the player everything! Copied from the debug entry, as we need this for Srcbox because of the Single Player Branch
-		EquipSuit();
 		GiveAmmo(255, "Pistol");
 		GiveAmmo(255, "AR2");
 		GiveAmmo(5, "AR2AltFire");
@@ -5078,6 +5063,7 @@ void CBasePlayer::Spawn( void )
 #ifdef HL2_EPISODIC
 		GiveAmmo(5, "Hopwire");
 #endif		
+		EquipSuit();
 		GiveNamedItem("weapon_smg1");
 		GiveNamedItem("weapon_frag");
 		GiveNamedItem("weapon_crowbar");
@@ -5090,8 +5076,7 @@ void CBasePlayer::Spawn( void )
 		GiveNamedItem("weapon_rpg");
 		GiveNamedItem("weapon_357");
 		GiveNamedItem("weapon_crossbow");
-		EquipSuit();
-	//}
+	}
 }
 
 void CBasePlayer::Activate( void )

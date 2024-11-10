@@ -115,6 +115,7 @@ void InitParamsSkin_DX9( CBaseVSShader *pShader, IMaterialVar** params, const ch
 	{
 		params[info.m_nEnvmapFresnel]->SetFloatValue( 0 );
 	}
+	InitIntParam(info.m_nBaseMapLuminancePhongMask, params, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -681,7 +682,7 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 #ifndef _X360
 		else
 		{
-			pShader->SetHWMorphVertexShaderState( VERTEX_SHADER_SHADER_SPECIFIC_CONST_6, VERTEX_SHADER_SHADER_SPECIFIC_CONST_7, SHADER_VERTEXTEXTURE_SAMPLER0 );
+			//pShader->SetHWMorphVertexShaderState( VERTEX_SHADER_SHADER_SPECIFIC_CONST_6, VERTEX_SHADER_SHADER_SPECIFIC_CONST_7, SHADER_VERTEXTEXTURE_SAMPLER0 );
 
 			DECLARE_DYNAMIC_VERTEX_SHADER( skin_vs30 );
 			SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG, fogIndex );
@@ -892,10 +893,38 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 			vFresnelRanges_SpecBoost[2] = (vFresnelRanges_SpecBoost[2] - vFresnelRanges_SpecBoost[1]) * 2;
 		}
 
-		if ( (info.m_nPhongBoost != -1 ) && params[info.m_nPhongBoost]->IsDefined())		// Grab optional Phong boost param
+		if ((info.m_nPhongBoost != -1) && params[info.m_nPhongBoost]->IsDefined())		// Grab optional Phong boost param
+		{
 			vFresnelRanges_SpecBoost[3] = params[info.m_nPhongBoost]->GetFloatValue();
+		}
 		else
+		{
 			vFresnelRanges_SpecBoost[3] = 1.0f;
+		}
+		bool bHasFlashlightOnly = bHasFlashlight && !IsX360();
+		bool bHasBaseLuminancePhongMask = (info.m_nBaseMapLuminancePhongMask != -1) && (params[info.m_nBaseMapLuminancePhongMask]->GetIntValue() != 0);
+		float fHasBaseLuminancePhongMask = bHasBaseLuminancePhongMask ? 1 : 0;
+		float vShaderControls2[4] = { 0.0f, fHasBaseLuminancePhongMask, 0.0f, 0.0f };
+		if (!bHasFlashlightOnly)
+		{
+			if (bHasEnvmap)
+			{
+				if ((info.m_nEnvmapFresnel != -1) && params[info.m_nEnvmapFresnel]->IsDefined())
+				{
+					vShaderControls2[0] = params[info.m_nEnvmapFresnel]->GetFloatValue();
+				}
+			}
+		}
+		if ((info.m_nPhongExponent != -1) && params[info.m_nPhongExponent]->IsDefined())
+		{
+			vShaderControls2[2] = params[info.m_nPhongExponent]->GetFloatValue();		// This overrides the channel in the map
+		}
+		else
+		{
+			vShaderControls2[2] = 0;													// Use the alpha channel of the normal map for the exponent
+		}
+
+		vShaderControls2[3] = bHasSelfIllumMask ? 1.0f : 0.0f;
 
 		pShaderAPI->SetPixelShaderConstant( PSREG_EYEPOS_SPEC_EXPONENT, vEyePos_SpecExponent, 1 );
 		pShaderAPI->SetPixelShaderConstant( PSREG_FRESNEL_SPEC_PARAMS, vFresnelRanges_SpecBoost, 1 );
@@ -956,7 +985,8 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 //-----------------------------------------------------------------------------
 // Draws the shader
 //-----------------------------------------------------------------------------
-extern ConVar r_flashlight_version2;
+//extern ConVar r_flashlight_version2;
+ConVar r_flashlight_version2("r_flashlight_version2", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY);
 void DrawSkin_DX9( CBaseVSShader *pShader, IMaterialVar** params, IShaderDynamicAPI *pShaderAPI, IShaderShadow* pShaderShadow,
 				   VertexLitGeneric_DX9_Vars_t &info, VertexCompressionType_t vertexCompression,
 				   CBasePerMaterialContextData **pContextDataPtr )

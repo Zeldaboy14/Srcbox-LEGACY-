@@ -4,9 +4,3 @@ C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\shadercompile.exe
 C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\shadercompile_dll.dll 
 C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\tier0.dll 
 C:\STEAML~1\STEAMA~1\common\SOURCE~1\bin\vstdlib.dll 
-common_fog_vs_fxc.h
-common_fxc.h
-common_hlsl_cpp_consts.h
-common_pragmas.h
-common_vs_fxc.h
-sdk_unlittwotexture_vs20.fxc

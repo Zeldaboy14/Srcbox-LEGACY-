@@ -17,8 +17,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-DEFINE_FALLBACK_SHADER( SDK_UnlitTwoTexture, SDK_UnlitTwoTexture_DX9 )
-BEGIN_VS_SHADER( SDK_UnlitTwoTexture_DX9, "Help for SDK_UnlitTwoTexture_DX9" )
+//DEFINE_FALLBACK_SHADER( FBCK_UnlitTwoTexture, UnlitTwoTexture_SDK )
+BEGIN_VS_SHADER( UnlitTwoTexture_SDK, "" )
 	BEGIN_SHADER_PARAMS
 		SHADER_PARAM( TEXTURE2, SHADER_PARAM_TYPE_TEXTURE, "shadertest/BaseTexture", "second texture" )
 		SHADER_PARAM( FRAME2, SHADER_PARAM_TYPE_INTEGER, "0", "frame number for $texture2" )

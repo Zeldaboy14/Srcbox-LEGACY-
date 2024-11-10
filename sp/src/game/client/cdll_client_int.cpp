@@ -87,6 +87,7 @@
 #include "ihudlcd.h"
 #include "toolframework_client.h"
 #include "hltvcamera.h"
+#include "music_system.h"
 #if defined( REPLAY_ENABLED )
 #include "replay/replaycamera.h"
 #include "replay/replay_ragdoll.h"
@@ -228,6 +229,7 @@ AchievementsAndStatsInterface* g_pAchievementsAndStatsInterface = NULL;
 // HPE_END
 //=============================================================================
 
+CPFMainMenuMusic MenuMusic;
 IGameSystem *SoundEmitterSystem();
 IGameSystem *ToolFrameworkClientSystem();
 
@@ -598,6 +600,7 @@ public:
 
 	virtual int						Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physicsFactory, CGlobalVarsBase *pGlobals );
 
+	void SwapDisconnectCommand();
 	virtual void					PostInit();
 	virtual void					Shutdown( void );
 
@@ -1085,6 +1088,8 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	HookHapticMessages(); // Always hook the messages
 #endif
 
+	MenuMusic.Init();
+
 	return true;
 }
 
@@ -1129,7 +1134,7 @@ bool CHLClient::ReplayPostInit()
 void CHLClient::PostInit()
 {
 	IGameSystem::PostInitAllSystems();
-
+	
 #ifdef SIXENSE
 	// allow sixnese input to perform post-init operations
 	g_pSixenseInput->PostInit();
@@ -1152,7 +1157,13 @@ void CHLClient::PostInit()
 		}
 	}
 #endif
+	SwapDisconnectCommand();
+	//void CHLClient::SwapDisconnectCommand()
+	//{}
 }
+
+void CHLClient::SwapDisconnectCommand()
+{}
 
 //-----------------------------------------------------------------------------
 // Purpose: Called when the client .dll is being dismissed
@@ -1280,6 +1291,7 @@ void CHLClient::HudUpdate( bool bActive )
 	// I don't think this is necessary any longer, but I will leave it until
 	// I can check into this further.
 	C_BaseTempEntity::CheckDynamicTempEnts();
+	MenuMusic.OnTick();
 
 #ifdef SIXENSE
 	// If we're not connected, update sixense so we can move the mouse cursor when in the menus

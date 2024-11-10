@@ -1,0 +1,5 @@
+Shaders:
+UnlitTwoTexture transparent support - COMPLETE
+Vertexlitgeneric-
+$allowdiffusemodulation 1 - NOT DONE
+$BASEMAPLUMINANCEPHONGMASK 1 - NOT DONE

@@ -72,6 +72,7 @@ struct VertexLitGeneric_DX9_Vars_t
 	int m_nHDRColorScale;
 	int m_nPhong;
 	int m_nBaseMapAlphaPhongMask;
+	int m_nBaseMapLuminancePhongMask;
 	int m_nEnvmapFresnel;
 
 	int m_nDetailTextureCombineMode;

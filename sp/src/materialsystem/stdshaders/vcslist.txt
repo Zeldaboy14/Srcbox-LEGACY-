@@ -4,5 +4,9 @@
 ..\..\..\game\hl2\shaders\fxc\SDK_cloak_ps30.vcs
 ..\..\..\game\hl2\shaders\fxc\sdk_cloak_blended_pass_ps30.vcs
 ..\..\..\game\hl2\shaders\fxc\sdk_cloak_blended_pass_vs30.vcs
-..\..\..\game\hl2\shaders\fxc\sdk_unlittwotexture_ps30.vcs
-..\..\..\game\hl2\shaders\fxc\sdk_unlittwotexture_vs30.vcs
+..\..\..\game\hl2\shaders\fxc\unlittwotexture_ps30.vcs
+..\..\..\game\hl2\shaders\fxc\unlittwotexture_vs30.vcs
+..\..\..\game\hl2\shaders\fxc\weapon_sheen_pass_ps30.vcs
+..\..\..\game\hl2\shaders\fxc\weapon_sheen_pass_vs30.vcs
+..\..\..\game\hl2\shaders\fxc\emissive_scroll_blended_pass_ps30.vcs
+..\..\..\game\hl2\shaders\fxc\emissive_scroll_blended_pass_vs30.vcs

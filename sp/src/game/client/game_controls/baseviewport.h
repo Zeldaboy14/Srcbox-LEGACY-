@@ -33,6 +33,9 @@ public:
 	CBaseViewport();
 	virtual ~CBaseViewport();
 
+	void StartMainMenuVideo();
+	void StopMainMenuVideo();
+
 	virtual IViewPortPanel* CreatePanelByName(const char *szPanelName);
 	virtual IViewPortPanel* FindPanelByName(const char *szPanelName);
 	virtual IViewPortPanel* GetActivePanel( void );
@@ -73,6 +76,8 @@ public:
 public: // IGameEventListener:
 	virtual void FireGameEvent( IGameEvent * event);
 
+private:
+	class CMainMenu *m_pMainMenuPanel;
 
 protected:
 
