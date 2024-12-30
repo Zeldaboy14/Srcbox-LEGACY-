@@ -1,0 +1,10 @@
+"LightmappedGeneric_SDK"
+{
+	"$basetexture"			"maps/yms/tile_main"
+	"$bumpmap"			"phong"
+	//"$normalmapalphaenvmapmask"	"1"
+	"$surfaceprop"			"rock"
+	"%keywords" 			"yms_project"
+	"$envmap"			"env_cubemap"
+	"$envmaptint"			0.08
+}

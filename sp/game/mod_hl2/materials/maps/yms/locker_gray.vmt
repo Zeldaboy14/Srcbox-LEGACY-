@@ -1,0 +1,9 @@
+"LightmappedGeneric"
+{
+	"$basetexture"			"maps/yms/locker_pink"
+	"$bumpmap"			"phong"
+	"$surfaceprop"			"rock"
+	"%keywords" 			"yms_project"
+	"$envmap"			"env_cubemap"
+	"$envmaptint"			0.05
+}

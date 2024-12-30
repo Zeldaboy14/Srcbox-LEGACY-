@@ -1,0 +1,9 @@
+"LightmappedGeneric_SDK"
+{
+	"$basetexture"			"maps/yms/tile_6th_wall"
+	"$bumpmap"			"maps/yms/tile_6th_wall_nrm"
+	"$surfaceprop"			"rock"
+	"%keywords" 			"yms_project"
+	"$envmap"			"env_cubemap"
+	"$envmaptint"			0.065
+}

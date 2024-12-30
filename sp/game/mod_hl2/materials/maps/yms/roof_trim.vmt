@@ -1,0 +1,9 @@
+"LightmappedGeneric"
+{
+	//"$basetexture" "concrete/pcon2trim"
+	"$basetexture" "maps/yms/fluorescentwarm001"
+	"$decal" 1
+	"$surfaceprop" "glass"
+	"$bumpmap" "concrete/pcon2trim_normal"
+	"$color"		"[0.3 0.3 0.3]"
+}

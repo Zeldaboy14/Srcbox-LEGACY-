@@ -1,0 +1,19 @@
+"UnlitGeneric"
+{
+	"$basetexture"			"maps/yms/props/ceiling_clock/lcd_clock"
+	"$bumpmap"			"phong"
+	"$surfaceprop"			"metal"
+	"$envmap"			"env_cubemap"
+	"$envmaptint"			0.2
+
+"Proxies"
+	{
+	"AnimatedTexture"
+	{
+	"animatedTextureVar" "$basetexture"
+	"animatedTextureFrameNumVar" "$frame"
+	"animatedTextureFrameRate" "2"
+	}
+        }
+}
+

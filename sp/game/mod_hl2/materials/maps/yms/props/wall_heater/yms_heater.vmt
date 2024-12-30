@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$basetexture"			"maps/yms/props/wall_heater/yms_heater"
+	"$bumpmap"			"phong"
+	"$surfaceprop"			"metal"
+	"$envmap"			"env_cubemap"
+	"$envmaptint"			0.05
+}
+

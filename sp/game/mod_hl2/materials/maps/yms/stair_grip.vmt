@@ -1,0 +1,8 @@
+"LightmappedGeneric"
+{
+	// Original shader: BaseTimesLightmapSelfIllum
+	"$basetexture" "maps/yms/stair_grip"
+	"$bumpmap" "maps/yms/stair_grip_nrm"
+	"$translucent" 1
+	"$surfaceprop" "stone"
+}

@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$basetexture"			"maps/yms/props/ceiling_clock/clock_gray"
+	"$bumpmap"			"phong"
+	"$surfaceprop"			"metal"
+	"$envmap"			"env_cubemap"
+	"$envmaptint"			0.02
+}
+
