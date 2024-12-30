@@ -1,0 +1,29 @@
+// Completely Black Shader for Source SDK 2013
+// Filename: BlackShader.vsh
+
+#include "common_vs_fxc.h"
+
+struct VS_INPUT
+{
+    float4 vPos : POSITION;    // Vertex position
+    float2 vTexCoord : TEXCOORD0; // Texture coordinate (if needed)
+};
+
+struct VS_OUTPUT
+{
+    float4 vProjPos : POSITION;    // Projected vertex position
+    float2 vTexCoord : TEXCOORD0; // Pass-through texture coordinate
+};
+
+VS_OUTPUT main( VS_INPUT input )
+{
+    VS_OUTPUT output;
+
+    // Transform the vertex position to projection space
+    output.vProjPos = mul( input.vPos, cModelViewProj );
+
+    // Pass through texture coordinates (if needed for other operations)
+    output.vTexCoord = input.vTexCoord;
+
+    return output;
+}

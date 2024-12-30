@@ -32,7 +32,7 @@
 
 //static ConVar mat_fullbright( "mat_fullbright","0", FCVAR_CHEAT );
 static ConVar r_lightwarpidentity( "r_lightwarpidentity","0", FCVAR_CHEAT );
-ConVar my_mat_fullbright("mat_fullbright", "0", FCVAR_CHEAT);
+//ConVar my_mat_fullbright("mat_fullbright", "0", FCVAR_CHEAT);
 
 
 static inline bool WantsSkinShader( IMaterialVar** params, const VertexLitGeneric_DX9_Vars_t &info )

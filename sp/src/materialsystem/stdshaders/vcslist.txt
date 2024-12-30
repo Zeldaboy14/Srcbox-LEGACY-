@@ -6,7 +6,15 @@
 ..\..\..\game\hl2\shaders\fxc\sdk_cloak_blended_pass_vs30.vcs
 ..\..\..\game\hl2\shaders\fxc\unlittwotexture_ps30.vcs
 ..\..\..\game\hl2\shaders\fxc\unlittwotexture_vs30.vcs
-..\..\..\game\hl2\shaders\fxc\weapon_sheen_pass_ps30.vcs
-..\..\..\game\hl2\shaders\fxc\weapon_sheen_pass_vs30.vcs
+..\..\..\game\hl2\shaders\fxc\ssao_ps30.vcs
+..\..\..\game\hl2\shaders\fxc\ssao_vs30.vcs
+..\..\..\game\hl2\shaders\fxc\ssao_combine_vs30.vcs
+..\..\..\game\hl2\shaders\fxc\ssao_combine_ps30.vcs
+..\..\..\game\hl2\shaders\fxc\gauss_blur_3x3_ps30.vcs
+..\..\..\game\hl2\shaders\fxc\gauss_blur_3x3_vs30.vcs
 ..\..\..\game\hl2\shaders\fxc\emissive_scroll_blended_pass_ps30.vcs
 ..\..\..\game\hl2\shaders\fxc\emissive_scroll_blended_pass_vs30.vcs
+..\..\..\game\hl2\shaders\fxc\vertexlit_and_unlit_generic_ps30.vcs
+..\..\..\game\hl2\shaders\fxc\vertexlit_and_unlit_generic_vs30.vcs
+..\..\..\game\hl2\shaders\fxc\vertexlit_and_unlit_generic_bump_ps30.vcs
+..\..\..\game\hl2\shaders\fxc\vertexlit_and_unlit_generic_bump_vs30.vcs

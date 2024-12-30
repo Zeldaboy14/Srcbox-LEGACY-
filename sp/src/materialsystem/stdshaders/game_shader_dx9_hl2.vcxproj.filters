@@ -92,18 +92,15 @@
     <ClInclude Include="skin_dx9_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lightmappedgeneric_dx9_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseVSShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bloom.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="example_model_dx9.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="example_model_dx9_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\public\tier0\memoverride.cpp">
@@ -124,7 +121,25 @@
     <ClCompile Include="unlittwotexture_dx9.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="weapon_sheen_pass_helper.cpp">
+    <ClCompile Include="gaussian_blur_3x3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ssao.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ssao_combine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="black.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vertexlitgeneric_dx9_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vertexlitgeneric_dx9.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="skin_dx9_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="emissive_scroll_blended_pass_helper.cpp">
@@ -133,13 +148,10 @@
     <ClCompile Include="flesh_interior_blended_pass_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="skin_dx9_helper.cpp">
+    <ClCompile Include="lightmappedgeneric_dx9.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vertexlitgeneric_dx9.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vertexlitgeneric_dx9_helper.cpp">
+    <ClCompile Include="lightmappedgeneric_dx9_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

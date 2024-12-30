@@ -6,7 +6,15 @@ fxctmp9_tmp\sdk_cloak_blended_pass_ps30.inc
 fxctmp9_tmp\sdk_cloak_blended_pass_vs30.inc
 fxctmp9_tmp\unlittwotexture_ps30.inc
 fxctmp9_tmp\unlittwotexture_vs30.inc
-fxctmp9_tmp\weapon_sheen_pass_ps30.inc
-fxctmp9_tmp\weapon_sheen_pass_vs30.inc
+fxctmp9_tmp\ssao_ps30.inc
+fxctmp9_tmp\ssao_vs30.inc
+fxctmp9_tmp\ssao_combine_vs30.inc
+fxctmp9_tmp\ssao_combine_ps30.inc
+fxctmp9_tmp\gauss_blur_3x3_ps30.inc
+fxctmp9_tmp\gauss_blur_3x3_vs30.inc
 fxctmp9_tmp\emissive_scroll_blended_pass_ps30.inc
 fxctmp9_tmp\emissive_scroll_blended_pass_vs30.inc
+fxctmp9_tmp\vertexlit_and_unlit_generic_ps30.inc
+fxctmp9_tmp\vertexlit_and_unlit_generic_vs30.inc
+fxctmp9_tmp\vertexlit_and_unlit_generic_bump_ps30.inc
+fxctmp9_tmp\vertexlit_and_unlit_generic_bump_vs30.inc

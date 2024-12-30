@@ -1,0 +1,14 @@
+// Completely Black Shader - Pixel Shader
+#include "common_ps_fxc.h"
+
+struct PS_INPUT
+{
+    float4 vProjPos : POSITION;    // Projected vertex position
+    float2 vTexCoord : TEXCOORD0; // Texture coordinate
+};
+
+float4 main( PS_INPUT input ) : COLOR
+{
+    // Output black color
+    return float4( 0.0, 0.0, 0.0, 1.0 );
+}
