@@ -114,6 +114,7 @@ $Project "Client (HL2)"
 			$File 	"episodic\c_vort_charge_token.cpp"
 			$File 	"hl2\music_system.cpp"
 			$File 	"hl2\music_system.h"
+			$File 	"hl2\c_weapon_gravitygun.cpp"
 		}
 	}
 }

@@ -266,6 +266,7 @@ $Project "Server (Episodic)"
 			$File	"episodic\weapon_striderbuster.h"
 			$File	"hl2\weapon_stunstick.cpp"
 			$File	"hl2\weapon_stunstick.h"
+			$File	"hl2\weapon_physgun.cpp"
 			$File	"episodic\ep1_gamestats.h"
 			$File	"episodic\ep2_gamestats.h"
 			$File	"episodic\ep1_gamestats.cpp" \
