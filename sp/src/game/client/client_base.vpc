@@ -226,6 +226,7 @@ $Project
 		$File	"c_baseviewmodel.cpp"
 		$File	"c_breakableprop.cpp"
 		$File	"c_colorcorrection.cpp"
+		$File	"c_colorcorrection.h"
 		$File	"c_colorcorrectionvolume.cpp"
 		$File	"c_dynamiclight.cpp"
 		$File	"c_entitydissolve.cpp"
@@ -637,6 +638,11 @@ $Project
 			$File	"fx_sparks.cpp"
 			$File	"particlesphererenderer.cpp"
 			$File	"smoke_fog_overlay.cpp"
+			$File	"MyPanel.cpp"
+			$File	"IMyPanel.h"
+			$File	"menu_background.cpp"
+			$File	"c_postprocesscontroller.cpp"
+			$File	"c_postprocesscontroller.h"
 		}
 
 		$Folder	"game_controls"

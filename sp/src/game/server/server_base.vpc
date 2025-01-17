@@ -661,6 +661,14 @@ $Project
 		$File	"$SRCDIR\game\shared\SharedFunctorUtils.h"
 		$File	"$SRCDIR\game\server\vote_controller.h"
 		$File	"$SRCDIR\game\server\vote_controller.cpp"
+		$File	"env_tonemap_controller.h"
+		$File	"env_tonemap_controller.cpp"
+		$File	"colorcorrection.h"
+		$File	"colorcorrectionvolume.cpp"
+		$File	"postprocesscontroller.cpp"
+		$File	"postprocesscontroller.h"
+		$File	"fogvolume.cpp"
+		$File	"fogvolume.h"
 		//Haptics
 		$File	"$SRCDIR\public\haptics\haptic_msgs.cpp"
 		$File	"$SRCDIR\public\haptics\haptic_utils.cpp"	[$WIN32]

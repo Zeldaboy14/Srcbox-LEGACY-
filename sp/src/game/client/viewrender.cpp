@@ -124,6 +124,11 @@ ConVar r_DrawDetailProps( "r_DrawDetailProps", "1", FCVAR_NONE, "0=Off, 1=Normal
 
 ConVar r_worldlistcache( "r_worldlistcache", "1" );
 
+// SSAO Implentation
+
+//Crossroads devtest
+ConVar cr_ssao_enable("cr_ssao_enable", "1", FCVAR_ARCHIVE);
+
 //-----------------------------------------------------------------------------
 // Convars related to fog color
 //-----------------------------------------------------------------------------
@@ -781,6 +786,11 @@ CLIENTEFFECT_REGISTER_BEGIN( PrecachePostProcessingEffects )
 	CLIENTEFFECT_MATERIAL( "dev/blurfiltery_nohdr" )
 	CLIENTEFFECT_MATERIAL( "dev/bloomadd" )
 	CLIENTEFFECT_MATERIAL( "dev/downsample" )
+// SSAO
+//crossroads devtest
+	CLIENTEFFECT_MATERIAL( "dev/ssao" )
+	CLIENTEFFECT_MATERIAL( "dev/ssaoblur" )
+	CLIENTEFFECT_MATERIAL("dev/ssao_combine")
 	#ifdef CSTRIKE_DLL
 		CLIENTEFFECT_MATERIAL( "dev/downsample_non_hdr_cstrike" )
 	#else
@@ -2031,7 +2041,8 @@ void CViewRender::RenderView( const CViewSetup &view, int nClearFlags, int whatT
 				pRenderContext.GetFrom( materials );
 				{
 					PIXEVENT( pRenderContext, "DoImageSpaceMotionBlur" );
-					DoImageSpaceMotionBlur( view, view.x, view.y, view.width, view.height );
+					//DoImageSpaceMotionBlur( view, view.x, view.y, view.width, view.height );
+					DoImageSpaceMotionBlur(view);
 				}
 				pRenderContext.SafeRelease();
 			}
@@ -2141,6 +2152,14 @@ void CViewRender::RenderView( const CViewSetup &view, int nClearFlags, int whatT
 			m_CurrentView = currentView;
 		}
 
+	}
+
+	// SSAO Implentation
+
+	// Crossroads devtest SSAO
+	if (cr_ssao_enable.GetBool())
+	{
+		DoSSAO(view);
 	}
 
 	if ( mat_viewportupscale.GetBool() && mat_viewportscale.GetFloat() < 1.0f ) 

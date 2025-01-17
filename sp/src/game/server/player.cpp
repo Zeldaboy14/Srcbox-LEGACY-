@@ -59,6 +59,10 @@
 #include "env_zoom.h"
 #include "rumble_shared.h"
 #include "gamestats.h"
+// From Alien Swarm SDL (Mapbase)
+#include "env_tonemap_controller.h"
+#include "fogvolume.h"
+// End
 #include "npcevent.h"
 #include "datacache/imdlcache.h"
 #include "hintsystem.h"
@@ -259,6 +263,7 @@ BEGIN_DATADESC( CBasePlayer )
 #if defined USES_ECON_ITEMS
 	DEFINE_EMBEDDED( m_AttributeList ),
 #endif
+
 	DEFINE_UTLVECTOR( m_hTriggerSoundscapeList, FIELD_EHANDLE ),
 	DEFINE_EMBEDDED( pl ),
 
@@ -351,6 +356,7 @@ BEGIN_DATADESC( CBasePlayer )
 
 	DEFINE_FIELD( m_bitsHUDDamage, FIELD_INTEGER ),
 	DEFINE_FIELD( m_fInitHUD, FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_fLongJump, FIELD_BOOLEAN),
 	DEFINE_FIELD( m_flDeathTime, FIELD_TIME ),
 	DEFINE_FIELD( m_flDeathAnimTime, FIELD_TIME ),
 
@@ -1824,6 +1830,17 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 		}
 	}
 
+	/*if (m_fLongJump &&
+		//(pev->button & IN_DUCK) &&
+		(fAnyButtonDown & IN_DUCK) &&
+		//(pev->flDuckTime > 0) &&
+		(m_flDuckTime > 0) &&
+		//pev->velocity.Length() > 50)
+		GetAbsVelocity().Length() > 50)
+	{
+		SetAnimation(PLAYER_SUPERJUMP);
+	}*/
+
 	
 	if (idealActivity == ACT_RANGE_ATTACK1)
 	{
@@ -2874,6 +2891,16 @@ float CBasePlayer::GetHeldObjectMass( IPhysicsObject *pHeldObject )
 //-----------------------------------------------------------------------------
 void CBasePlayer::Jump()
 {
+	if (m_fLongJump &&
+	//(pev->button & IN_DUCK) &&
+	(m_nButtons & IN_DUCK) &&
+	//(pev->flDuckTime > 0) &&
+	(m_flDuckTime > 0) &&
+	//pev->velocity.Length() > 50)
+	GetAbsVelocity().Length() > 50)
+	{
+		SetAnimation(PLAYER_SUPERJUMP);
+	}
 }
 
 void CBasePlayer::Duck( )
@@ -4495,12 +4522,63 @@ void CBasePlayer::ForceOrigin( const Vector &vecOrigin )
 	m_vForcedOrigin = vecOrigin;
 }
 
+//#ifdef MAPBASE // From Alien Swarm SDK
+//--------------------------------------------------------------------------------------------------------
+void CBasePlayer::OnTonemapTriggerStartTouch(CTonemapTrigger *pTonemapTrigger)
+{
+	m_hTriggerTonemapList.FindAndRemove(pTonemapTrigger);
+	m_hTriggerTonemapList.AddToTail(pTonemapTrigger);
+}
+
+
+//--------------------------------------------------------------------------------------------------------
+void CBasePlayer::OnTonemapTriggerEndTouch(CTonemapTrigger *pTonemapTrigger)
+{
+	m_hTriggerTonemapList.FindAndRemove(pTonemapTrigger);
+}
+
+
+//--------------------------------------------------------------------------------------------------------
+void CBasePlayer::UpdateTonemapController(void)
+{
+	// For now, Mapbase uses Tony Sergi's Source 2007 tonemap fixes.
+	// Alien Swarm SDK tonemap controller code copies the parameters instead.
+
+	CEnvTonemapController *pController = NULL;
+
+	if (m_hTriggerTonemapList.Count() > 0)
+	{
+		pController = static_cast<CEnvTonemapController*>(m_hTriggerTonemapList.Tail()->GetTonemapController());
+	}
+	else if (TheTonemapSystem()->GetMasterTonemapController())
+	{
+		pController = static_cast<CEnvTonemapController*>(TheTonemapSystem()->GetMasterTonemapController());
+	}
+
+	if (pController)
+	{
+		//m_hTonemapController = TheTonemapSystem()->GetMasterTonemapController();
+
+		if (pController->m_bUseCustomAutoExposureMax)
+			m_Local.m_TonemapParams.m_flAutoExposureMax = pController->m_flCustomAutoExposureMax;
+
+		if (pController->m_bUseCustomAutoExposureMin)
+			m_Local.m_TonemapParams.m_flAutoExposureMin = pController->m_flCustomAutoExposureMin;
+
+		if (pController->m_bUseCustomBloomScale)
+			m_Local.m_TonemapParams.m_flBloomScale = pController->m_flCustomBloomScale;
+	}
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 void CBasePlayer::PostThink()
 {
 	m_vecSmoothedVelocity = m_vecSmoothedVelocity * SMOOTHING_FACTOR + GetAbsVelocity() * ( 1 - SMOOTHING_FACTOR );
+
+	UpdateTonemapController();
+	UpdateFXVolume();
 
 	if ( !g_fGameOver && !m_iPlayerLocked )
 	{
@@ -4877,6 +4955,56 @@ void CBasePlayer::InitialSpawn( void )
 	m_iConnected = PlayerConnected;
 	gamestats->Event_PlayerConnected( this );
 }
+
+
+//-----------------------------------------------------------------------------
+// Purpose: clear our m_Local.m_TonemapParams to -1.
+//-----------------------------------------------------------------------------
+void CBasePlayer::ClearTonemapParams(void)
+{
+	//Tony; clear all the variables to -1.0
+	m_Local.m_TonemapParams.m_flAutoExposureMin = -1.0f;
+	m_Local.m_TonemapParams.m_flAutoExposureMax = -1.0f;
+	m_Local.m_TonemapParams.m_flTonemapScale = -1.0f;
+	m_Local.m_TonemapParams.m_flBloomScale = -1.0f;
+	m_Local.m_TonemapParams.m_flTonemapRate = -1.0f;
+}
+void CBasePlayer::InputSetTonemapScale(inputdata_t &inputdata)
+{
+	m_Local.m_TonemapParams.m_flTonemapScale = inputdata.value.Float();
+}
+
+void CBasePlayer::InputSetTonemapRate(inputdata_t &inputdata)
+{
+	m_Local.m_TonemapParams.m_flTonemapRate = inputdata.value.Float();
+}
+void CBasePlayer::InputSetAutoExposureMin(inputdata_t &inputdata)
+{
+	m_Local.m_TonemapParams.m_flAutoExposureMin = inputdata.value.Float();
+}
+
+void CBasePlayer::InputSetAutoExposureMax(inputdata_t &inputdata)
+{
+	m_Local.m_TonemapParams.m_flAutoExposureMax = inputdata.value.Float();
+}
+
+void CBasePlayer::InputSetBloomScale(inputdata_t &inputdata)
+{
+	m_Local.m_TonemapParams.m_flBloomScale = inputdata.value.Float();
+}
+
+//Tony; restore defaults (set min/max to -1.0 so nothing gets overridden)
+void CBasePlayer::InputUseDefaultAutoExposure(inputdata_t &inputdata)
+{
+	m_Local.m_TonemapParams.m_flAutoExposureMin = -1.0f;
+	m_Local.m_TonemapParams.m_flAutoExposureMax = -1.0f;
+	m_Local.m_TonemapParams.m_flTonemapRate = -1.0f;
+}
+void CBasePlayer::InputUseDefaultBloomScale(inputdata_t &inputdata)
+{
+	m_Local.m_TonemapParams.m_flBloomScale = -1.0f;
+}
+//	void	InputSetBloomScaleRange( inputdata_t &inputdata );
 
 //-----------------------------------------------------------------------------
 // Purpose: Called everytime the player respawns
@@ -8739,6 +8867,70 @@ void CBasePlayer::InitFogController( void )
 	m_Local.m_PlayerFog.m_hCtrl = FogSystem()->GetMasterFogController();
 }
 
+//#ifdef MAPBASE // From Alien Swarm SDK
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+void CBasePlayer::InitPostProcessController(void)
+{
+	// Setup with the default master controller.
+	m_hPostProcessCtrl = PostProcessSystem()->GetMasterPostProcessController();
+}
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+void CBasePlayer::InitColorCorrectionController(void)
+{
+	m_hColorCorrectionCtrl = ColorCorrectionSystem()->GetMasterColorCorrection();
+}
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+void CBasePlayer::InputSetPostProcessController(inputdata_t &inputdata)
+{
+	// Find the fog controller with the given name.
+	CPostProcessController *pController = NULL;
+	if (inputdata.value.FieldType() == FIELD_EHANDLE)
+	{
+		pController = dynamic_cast<CPostProcessController*>(inputdata.value.Entity().Get());
+	}
+	else
+	{
+		pController = dynamic_cast<CPostProcessController*>(gEntList.FindEntityByName(NULL, inputdata.value.String()));
+	}
+
+	if (pController)
+	{
+		m_hPostProcessCtrl.Set(pController);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// READD IN FUTURE?
+//-----------------------------------------------------------------------------
+void CBasePlayer::InputSetColorCorrectionController(inputdata_t &inputdata)
+{
+	// Find the fog controller with the given name.
+	CColorCorrection *pController = NULL;
+	if (inputdata.value.FieldType() == FIELD_EHANDLE)
+	{
+		pController = dynamic_cast<CColorCorrection*>(inputdata.value.Entity().Get());
+	}
+	else
+	{
+		pController = dynamic_cast<CColorCorrection*>(gEntList.FindEntityByName(NULL, inputdata.value.String()));
+	}
+
+	if (pController)
+	{
+		m_hColorCorrectionCtrl.Set(pController);
+	}
+
+}
+//#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *pEntity - 
@@ -9402,3 +9594,69 @@ uint64 CBasePlayer::GetSteamIDAsUInt64( void )
 	return 0;
 }
 #endif // NO_STEAM
+
+// From Alien Swarm (Mapbase Implentation)
+//--------------------------------------------------------------------------------------------------------
+void CBasePlayer::UpdateFXVolume(void)
+{
+	CFogController *pFogController = NULL;
+	CPostProcessController *pPostProcessController = NULL;
+	CColorCorrection* pColorCorrectionEnt = NULL;
+
+	Vector eyePos;
+	CBaseEntity *pViewEntity = GetViewEntity();
+	if (pViewEntity)
+	{
+		eyePos = pViewEntity->GetAbsOrigin();
+	}
+	else
+	{
+		eyePos = EyePosition();
+	}
+
+	CFogVolume *pFogVolume = CFogVolume::FindFogVolumeForPosition(eyePos);
+	if (pFogVolume)
+	{
+		pFogController = pFogVolume->GetFogController();
+		pPostProcessController = pFogVolume->GetPostProcessController();
+		pColorCorrectionEnt = pFogVolume->GetColorCorrectionController();
+
+		if (!pFogController)
+		{
+			pFogController = FogSystem()->GetMasterFogController();
+		}
+
+		if (!pPostProcessController)
+		{
+			pPostProcessController = PostProcessSystem()->GetMasterPostProcessController();
+		}
+
+		if (!pColorCorrectionEnt)
+		{
+			pColorCorrectionEnt = ColorCorrectionSystem()->GetMasterColorCorrection();
+		}
+	}
+	else if (TheFogVolumes.Count() > 0)
+	{
+		// If we're not in a fog volume, clear our fog volume, if the map has any.
+		// This will get us back to using the master fog controller.
+		pFogController = FogSystem()->GetMasterFogController();
+		pPostProcessController = PostProcessSystem()->GetMasterPostProcessController();
+		pColorCorrectionEnt = ColorCorrectionSystem()->GetMasterColorCorrection();
+	}
+
+	if (pFogController && m_Local.m_PlayerFog.m_hCtrl.Get() != pFogController)
+	{
+		m_Local.m_PlayerFog.m_hCtrl.Set(pFogController);
+	}
+
+	if (pPostProcessController)
+	{
+		m_hPostProcessCtrl.Set(pPostProcessController);
+	}
+
+	if (pColorCorrectionEnt)
+	{
+		m_hColorCorrectionCtrl.Set(pColorCorrectionEnt);
+	}
+}

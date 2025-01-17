@@ -6,13 +6,21 @@
 // $NoKeywords: $
 //=============================================================================
 
+#define PARALLAX 1
+
 #include "lightmappedgeneric_dx9_helper.h"
 #include "BaseVSShader.h"
 #include "commandbuilder.h"
 #include "convar.h"
+#ifdef PARALLAX
 #include "lightmappedgeneric_ps20.inc"
 #include "lightmappedgeneric_vs20.inc"
 #include "lightmappedgeneric_ps20b.inc"
+#else 
+#include "lightmappedgeneric_ps20_stock.inc"
+#include "lightmappedgeneric_vs20_stock.inc"
+#include "lightmappedgeneric_ps20b_stock.inc"
+#endif
 
 #include "tier0/memdbgon.h"
 
@@ -188,10 +196,12 @@ void InitParamsLightmappedGeneric_DX9( CBaseVSShader *pShader, IMaterialVar** pa
 
 	// Parallax cubemaps
 	// Cubemap parallax correction requires all 4 lines (if the 2nd, 3rd, or 4th are undef, undef the first one (checking done on first var)
-	if (!(params[info.m_nEnvmapParallaxObb2]->IsDefined() && params[info.m_nEnvmapParallaxObb3]->IsDefined() && params[info.m_nEnvmapOrigin]->IsDefined()))
-	{
-		params[info.m_nEnvmapParallaxObb1]->SetUndefined();
-	}
+	#ifdef PARALLAX
+    if (!( params[info.m_nEnvmapParallaxObb2]->IsDefined() && params[info.m_nEnvmapParallaxObb3]->IsDefined() && params[info.m_nEnvmapOrigin]->IsDefined()))
+    {
+        //params[info.m_nEnvmapParallaxObb1]->SetUndefined();
+    }
+	#endif
 }
 
 void InitLightmappedGeneric_DX9( CBaseVSShader *pShader, IMaterialVar** params, LightmappedGeneric_DX9_Vars_t &info )
@@ -321,8 +331,9 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 			(params[info.m_nBlendModulateTexture]->IsTexture() );
 		bool hasNormalMapAlphaEnvmapMask = IS_FLAG_SET( MATERIAL_VAR_NORMALMAPALPHAENVMAPMASK );
 		// Parallax cubemaps
+		#ifdef PARALLAX
 		bool hasParallaxCorrection = params[info.m_nEnvmapParallaxObb1]->IsDefined();
-
+		#endif
 		/*if ( hasFlashlight && !IsX360() )				
 		{
 			// !!speed!! do this in the caller so we don't build struct every time
@@ -579,7 +590,11 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 				bool bMaskedBlending=( (info.m_nMaskedBlending != -1) &&
 									   (params[info.m_nMaskedBlending]->GetIntValue() != 0) );
 
+				#ifdef PARALLAX
 				DECLARE_STATIC_VERTEX_SHADER( lightmappedgeneric_vs20 );
+				#else
+				DECLARE_STATIC_VERTEX_SHADER(lightmappedgeneric_vs20_stock);
+				#endif
 				SET_STATIC_VERTEX_SHADER_COMBO( ENVMAP_MASK,  hasEnvmapMask );
 				SET_STATIC_VERTEX_SHADER_COMBO( TANGENTSPACE,  params[info.m_nEnvmap]->IsTexture() );
 				SET_STATIC_VERTEX_SHADER_COMBO( BUMPMAP,  hasBump );
@@ -595,11 +610,19 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 				SET_STATIC_VERTEX_SHADER_COMBO( FLASHLIGHT, hasFlashlight);
 #endif
 
+				#ifdef PARALLAX
 				SET_STATIC_VERTEX_SHADER( lightmappedgeneric_vs20 );
+				#else
+				SET_STATIC_VERTEX_SHADER(lightmappedgeneric_vs20_stock);
+				#endif
 
 				if ( g_pHardwareConfig->SupportsPixelShaders_2_b() )
 				{
+					#ifdef PARALLAX
 					DECLARE_STATIC_PIXEL_SHADER( lightmappedgeneric_ps20b );
+					#else
+					DECLARE_STATIC_PIXEL_SHADER(lightmappedgeneric_ps20b_stock);
+					#endif
 					SET_STATIC_PIXEL_SHADER_COMBO( BASETEXTURE2, hasBaseTexture2 );
 					SET_STATIC_PIXEL_SHADER_COMBO( DETAILTEXTURE, hasDetailTexture );
 					SET_STATIC_PIXEL_SHADER_COMBO( BUMPMAP,  bumpmap_variant );
@@ -624,16 +647,25 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 					SET_STATIC_PIXEL_SHADER_COMBO( NORMAL_DECODE_MODE, (int)  nNormalDecodeMode );
 					SET_STATIC_PIXEL_SHADER_COMBO( NORMALMASK_DECODE_MODE, (int) nNormalMaskDecodeMode );
 					// Parallax cubemaps enabled for 2_0b and onwards
+					#ifdef PARALLAX
 					SET_STATIC_PIXEL_SHADER_COMBO(PARALLAXCORRECT, hasParallaxCorrection);
+					#endif
 #ifdef _X360
 					SET_STATIC_PIXEL_SHADER_COMBO( FLASHLIGHT, hasFlashlight);
 #endif
-
+					#ifdef PARALLAX
 					SET_STATIC_PIXEL_SHADER( lightmappedgeneric_ps20b );
+					#else
+					SET_STATIC_PIXEL_SHADER(lightmappedgeneric_ps20b_stock);
+					#endif
 				}
 				else
 				{
+					#ifdef PARALLAX
 					DECLARE_STATIC_PIXEL_SHADER( lightmappedgeneric_ps20 );
+					#else
+					DECLARE_STATIC_PIXEL_SHADER(lightmappedgeneric_ps20_stock);
+					#endif
 					SET_STATIC_PIXEL_SHADER_COMBO( BASETEXTURE2, hasBaseTexture2 );
 					SET_STATIC_PIXEL_SHADER_COMBO( DETAILTEXTURE, hasDetailTexture );
 					SET_STATIC_PIXEL_SHADER_COMBO( BUMPMAP,  bumpmap_variant );
@@ -657,8 +689,12 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 					SET_STATIC_PIXEL_SHADER_COMBO( NORMAL_DECODE_MODE, 0 );					// No normal compression with ps_2_0	(yikes!)
 					SET_STATIC_PIXEL_SHADER_COMBO( NORMALMASK_DECODE_MODE, 0 );				// No normal compression with ps_2_0
 					// Parallax cubemaps
+					#ifdef PARALLAX
 					SET_STATIC_PIXEL_SHADER_COMBO(PARALLAXCORRECT, 0); // No parallax cubemaps with ps_2_0 :(
 					SET_STATIC_PIXEL_SHADER( lightmappedgeneric_ps20 );
+					#else
+					SET_STATIC_PIXEL_SHADER(lightmappedgeneric_ps20_stock);
+					#endif
 				}
 				// HACK HACK HACK - enable alpha writes all the time so that we have them for
 				// underwater stuff and writing depth to dest alpha
@@ -937,6 +973,7 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 			}
 
 			// Parallax cubemaps
+			#ifdef PARALLAX
 			if (hasParallaxCorrection)
 			{
 				pContextData->m_SemiStaticCmdsOut.SetPixelShaderConstant(21, params[info.m_nEnvmapOrigin]->GetVecValue());
@@ -957,6 +994,7 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 				matrix[3][3] = 1;
 				pContextData->m_SemiStaticCmdsOut.SetPixelShaderConstant(22, &matrix[0][0], 4);
 			}
+			#endif
 
 			pContextData->m_SemiStaticCmdsOut.End();
 		}
@@ -986,14 +1024,22 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 		}
 
 		MaterialFogMode_t fogType = pShaderAPI->GetSceneFogMode();
+		#ifdef PARALLAX
 		DECLARE_DYNAMIC_VERTEX_SHADER( lightmappedgeneric_vs20 );
+		#else
+		DECLARE_DYNAMIC_VERTEX_SHADER(lightmappedgeneric_vs20_stock);
+		#endif
 		SET_DYNAMIC_VERTEX_SHADER_COMBO( DOWATERFOG,  fogType == MATERIAL_FOG_LINEAR_BELOW_FOG_Z );
 		SET_DYNAMIC_VERTEX_SHADER_COMBO( FASTPATH,  bVertexShaderFastPath );
 		SET_DYNAMIC_VERTEX_SHADER_COMBO( 
 			LIGHTING_PREVIEW, 
 			(nFixedLightingMode)?1:0
 			);
+		#ifdef PARALLAX
 		SET_DYNAMIC_VERTEX_SHADER_CMD( DynamicCmdsOut, lightmappedgeneric_vs20 );
+		#else
+		SET_DYNAMIC_VERTEX_SHADER_CMD(DynamicCmdsOut, lightmappedgeneric_vs20_stock);
+		#endif
 
 		bool bPixelShaderFastPath = pContextData->m_bPixelShaderFastPath;
 		if( nFixedLightingMode !=0 )
@@ -1018,7 +1064,11 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 		float envmapContrast = params[info.m_nEnvmapContrast]->GetFloatValue();
 		if ( g_pHardwareConfig->SupportsPixelShaders_2_b() )
 		{
+			#ifdef PARALLAX
 			DECLARE_DYNAMIC_PIXEL_SHADER( lightmappedgeneric_ps20b );
+			#else
+			DECLARE_DYNAMIC_PIXEL_SHADER(lightmappedgeneric_ps20b_stock);
+			#endif
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( FASTPATH,  bPixelShaderFastPath || pContextData->m_bPixelShaderForceFastPathBecauseOutline );
  			SET_DYNAMIC_PIXEL_SHADER_COMBO( FASTPATHENVMAPCONTRAST,  bPixelShaderFastPath && envmapContrast == 1.0f );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
@@ -1027,12 +1077,19 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITE_DEPTH_TO_DESTALPHA, bWriteDepthToAlpha );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITEWATERFOGTODESTALPHA, bWriteWaterFogToAlpha );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( LIGHTING_PREVIEW, nFixedLightingMode );
-			
+			#ifdef PARALLAX			
 			SET_DYNAMIC_PIXEL_SHADER_CMD( DynamicCmdsOut, lightmappedgeneric_ps20b );
+			#else
+			SET_DYNAMIC_PIXEL_SHADER_CMD(DynamicCmdsOut, lightmappedgeneric_ps20b_stock);
+			#endif
 		}
 		else
 		{
+			#ifdef PARALLAX	
 			DECLARE_DYNAMIC_PIXEL_SHADER( lightmappedgeneric_ps20 );
+			#else
+			DECLARE_DYNAMIC_PIXEL_SHADER(lightmappedgeneric_ps20_stock);
+			#endif
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( FASTPATH,  bPixelShaderFastPath );
  			SET_DYNAMIC_PIXEL_SHADER_COMBO( FASTPATHENVMAPCONTRAST,  bPixelShaderFastPath && envmapContrast == 1.0f );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( PIXELFOGTYPE, pShaderAPI->GetPixelFogCombo() );
@@ -1040,8 +1097,11 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 			// Don't write fog to alpha if we're using translucency
 			SET_DYNAMIC_PIXEL_SHADER_COMBO( WRITEWATERFOGTODESTALPHA, bWriteWaterFogToAlpha );
 			SET_DYNAMIC_PIXEL_SHADER_COMBO(	LIGHTING_PREVIEW, nFixedLightingMode );
-			
+			#ifdef PARALLAX	
 			SET_DYNAMIC_PIXEL_SHADER_CMD( DynamicCmdsOut, lightmappedgeneric_ps20 );
+			#else
+			//SET_DYNAMIC_PIXEL_SHADER_CMD(DynamicCmdsOut, lightmappedgeneric_ps20_stock);
+			#endif
 		}
 
 		if( hasFlashlight && IsX360() )
@@ -1117,6 +1177,8 @@ void DrawLightmappedGeneric_DX9(CBaseVSShader *pShader, IMaterialVar** params,
 		DrawLightmappedGeneric_DX9_Internal( pShader, params, hasFlashlight, pShaderAPI, pShaderShadow, info, pContextDataPtr );
 		return;
 	}*/
+
+	//cubemap parallax correction
 	
 	DrawLightmappedGeneric_DX9_Internal( pShader, params, hasFlashlight, pShaderAPI, pShaderShadow, info, pContextDataPtr );
 }

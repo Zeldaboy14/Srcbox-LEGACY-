@@ -18,6 +18,9 @@
 #include "hintsystem.h"
 #include "SoundEmitterSystem/isoundemittersystembase.h"
 #include "util_shared.h"
+#include "postprocesscontroller.h"
+//#include "fogvolume.h"
+#include "colorcorrection.h"
 
 #if defined USES_ECON_ITEMS
 #include "game_item_schema.h"
@@ -87,6 +90,8 @@ class CFuncLadder;
 class CNavArea;
 class CHintSystem;
 class CAI_Expresser;
+
+class CTonemapTrigger;
 
 #if defined USES_ECON_ITEMS
 class CEconWearable;
@@ -621,6 +626,8 @@ public:
 	void					PlayWearableAnimsForPlaybackEvent( wearableanimplayback_t iPlayback );
 #endif
 
+	void					UpdateFXVolume(void);		// From Alien Swarm SDK
+
 public:
 	// Player Physics Shadow
 	void					SetupVPhysicsShadow( const Vector &vecAbsOrigin, const Vector &vecAbsVelocity, CPhysCollide *pStandModel, const char *pStandHullName, CPhysCollide *pCrouchModel, const char *pCrouchHullName );
@@ -838,6 +845,19 @@ public:
 	void InitFogController( void );
 	void InputSetFogController( inputdata_t &inputdata );
 
+// From Alien Swarm SDK (Mapbase implentations)
+	void OnTonemapTriggerStartTouch(CTonemapTrigger *pTonemapTrigger);
+	void OnTonemapTriggerEndTouch(CTonemapTrigger *pTonemapTrigger);
+	CUtlVector< CHandle< CTonemapTrigger > > m_hTriggerTonemapList;
+
+	CNetworkHandle(CPostProcessController, m_hPostProcessCtrl);	// active postprocessing controller
+	CNetworkHandle(CColorCorrection, m_hColorCorrectionCtrl);		// active FXVolume color correction
+	void InitPostProcessController(void);
+	void InputSetPostProcessController(inputdata_t &inputdata);
+	void InitColorCorrectionController(void);
+	void InputSetColorCorrectionController(inputdata_t &inputdata);
+
+
 	// Used by env_soundscape_triggerable to manage when the player is touching multiple
 	// soundscape triggers simultaneously.
 	// The one at the HEAD of the list is always the current soundscape for the player.
@@ -977,6 +997,13 @@ protected:
 	float					m_fReplayEnd;		// time to stop replay mode
 	int						m_iReplayEntity;	// follow this entity in replay
 
+//#ifdef MAPBASE // From Alien Swarm SDK
+	// For now, Mapbase uses Tony Sergi's Source 2007 tonemap fixes.
+	// Alien Swarm SDK tonemap controller code copies the parameters instead.
+	virtual void UpdateTonemapController(void);
+	//CNetworkHandle( CBaseEntity, m_hTonemapController );
+//#endif
+
 private:
 	void HandleFuncTrain();
 
@@ -1019,6 +1046,11 @@ private:
 	bool					m_fInitHUD;				// True when deferred HUD restart msg needs to be sent
 	bool					m_fGameHUDInitialized;
 	bool					m_fWeapon;				// Set this to FALSE to force a reset of the current weapon HUD info
+
+public:
+	// Half-Life bool to re-enable the long jump module. Missing from SDK 2013 (and prior Source SDK's). Was public in HL1
+	bool					m_fLongJump; // does this player have the longjump module?
+private:
 
 	int						m_iUpdateTime;		// stores the number of frame ticks before sending HUD update messages
 	int						m_iClientBattery;	// the Battery currently known by the client.  If this changes, send a new
@@ -1212,6 +1244,23 @@ private:
 
 public:
 	virtual unsigned int PlayerSolidMask( bool brushOnly = false ) const;	// returns the solid mask for the given player, so bots can have a more-restrictive set
+
+private:
+	//
+	//Tony; new tonemap controller changes, specifically for multiplayer.
+	//
+	void	ClearTonemapParams();		//Tony; we need to clear our tonemap params every time we spawn to -1, if we trigger an input, the values will be set again.
+public:
+	void	InputSetTonemapScale(inputdata_t &inputdata);			//Set m_Local.
+	//	void	InputBlendTonemapScale( inputdata_t &inputdata );		//TODO; this should be calculated on the client, if we use it; perhaps an entity message would suffice? .. hmm..
+	void	InputSetTonemapRate(inputdata_t &inputdata);
+	void	InputSetAutoExposureMin(inputdata_t &inputdata);
+	void	InputSetAutoExposureMax(inputdata_t &inputdata);
+	void	InputSetBloomScale(inputdata_t &inputdata);
+
+	//Tony; restore defaults (set min/max to -1.0 so nothing gets overridden)
+	void	InputUseDefaultAutoExposure(inputdata_t &inputdata);
+	void	InputUseDefaultBloomScale(inputdata_t &inputdata);
 
 };
 

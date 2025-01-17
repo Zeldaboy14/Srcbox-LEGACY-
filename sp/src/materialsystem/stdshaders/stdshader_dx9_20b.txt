@@ -32,6 +32,7 @@ black_vs20.fxc
 
 lightmappedgeneric_ps2x.fxc
 lightmappedgeneric_vs20.fxc
+lightmappedgeneric_ps11.fxc
 
 emissive_scroll_blended_pass_ps2x.fxc
 emissive_scroll_blended_pass_vs20.fxc
@@ -41,3 +42,7 @@ vertexlit_and_unlit_generic_vs20.fxc
 vertexlit_and_unlit_generic_bump_ps2x.fxc
 vertexlit_and_unlit_generic_bump_vs20.fxc
 vertexlit_lighting_only_ps2x.fxc
+
+lightmappedgeneric_vs20_stock.fxc
+lightmappedgeneric_ps2x_stock.fxc
+lightmappedgeneric_ps11_stock.fxc

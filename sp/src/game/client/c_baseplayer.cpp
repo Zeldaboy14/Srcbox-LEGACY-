@@ -203,6 +203,14 @@ BEGIN_RECV_TABLE_NOBASE( CPlayerLocalData, DT_Local )
 	RecvPropInt( RECVINFO( m_audio.soundscapeIndex ) ),
 	RecvPropInt( RECVINFO( m_audio.localBits ) ),
 	RecvPropEHandle( RECVINFO( m_audio.ent ) ),
+
+	//Tony; tonemap stuff! -- TODO! Optimize this with bit sizes from env_tonemap_controller.
+	RecvPropFloat(RECVINFO(m_TonemapParams.m_flTonemapScale)),
+	RecvPropFloat(RECVINFO(m_TonemapParams.m_flTonemapRate)),
+	RecvPropFloat(RECVINFO(m_TonemapParams.m_flBloomScale)),
+
+	RecvPropFloat(RECVINFO(m_TonemapParams.m_flAutoExposureMin)),
+	RecvPropFloat(RECVINFO(m_TonemapParams.m_flAutoExposureMax)),
 END_RECV_TABLE()
 
 // -------------------------------------------------------------------------------- //
@@ -2794,6 +2802,23 @@ void C_BasePlayer::UpdateFogBlend( void )
 				
 		}
 	}
+}
+
+//#ifdef MAPBASE // From Alien Swarm SDK
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+C_PostProcessController* C_BasePlayer::GetActivePostProcessController() const
+{
+	return m_hPostProcessCtrl.Get();
+}
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+C_ColorCorrection* C_BasePlayer::GetActiveColorCorrection() const
+{
+	return m_hColorCorrectionCtrl.Get();
 }
 
 //-----------------------------------------------------------------------------

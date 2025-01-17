@@ -25,6 +25,8 @@
 #include "c_env_fog_controller.h"
 #include "igameevents.h"
 #include "GameEventListener.h"
+#include "c_postprocesscontroller.h"
+#include "c_colorcorrection.h"
 
 #if defined USES_ECON_ITEMS
 #include "econ_item.h"
@@ -379,6 +381,11 @@ public:
 	void					UpdateFogController( void );
 	void					UpdateFogBlend( void );
 
+// From Alien Swarm SDK (Mapbase)
+
+	C_PostProcessController* GetActivePostProcessController() const;
+	C_ColorCorrection*		GetActiveColorCorrection() const;
+
 	float					GetFOVTime( void ){ return m_flFOVTime; }
 
 	virtual void			OnAchievementAchieved( int iAchievement ) {}
@@ -627,6 +634,9 @@ private:
 	};
 	// One for left and one for right side of step
 	StepSoundCache_t		m_StepSoundCache[ 2 ];
+
+	CNetworkHandle(C_PostProcessController, m_hPostProcessCtrl);	// active postprocessing controller
+	CNetworkHandle(C_ColorCorrection, m_hColorCorrectionCtrl);	// active FXVolume color correction
 
 public:
 
