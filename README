@@ -1,6 +1,8 @@
 Srcbox - An open-sourced sandbox built using Source SDK 2013 SP
 A free mod ment to be an open-sourced version of garrys mod (10), with improvments
 Note: This is a Singleplayer Mod. I do not plan a multiplayer version at all (at this point in time)
+THIS VERSION OF THE MOD IS NOW INACTIVE!
+Im moving to SDK 2013 (2025) with TF2 stuff. Would rather use a updated official sdk with TF2 support and such then old SP branch from 12 years ago.
 
 Main features:
   Physgun repaired and code to freeze things (ammo removed (todo-fix))
