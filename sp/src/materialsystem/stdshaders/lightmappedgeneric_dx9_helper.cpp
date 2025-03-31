@@ -28,6 +28,7 @@ ConVar mat_disable_lightwarp( "mat_disable_lightwarp", "0" );
 ConVar mat_disable_fancy_blending( "mat_disable_fancy_blending", "0" );
 ConVar mat_fullbright( "mat_fullbright","0", FCVAR_CHEAT );
 ConVar my_mat_fullbright( "mat_fullbright","0", FCVAR_CHEAT );
+ConVar mat_specular("mat_specular", "1", FCVAR_CHEAT);
 extern ConVar r_flashlight_version2;
 
 class CLightmappedGeneric_DX9_Context : public CBasePerMaterialContextData
@@ -332,7 +333,7 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 		bool hasNormalMapAlphaEnvmapMask = IS_FLAG_SET( MATERIAL_VAR_NORMALMAPALPHAENVMAPMASK );
 		// Parallax cubemaps
 		#ifdef PARALLAX
-		bool hasParallaxCorrection = params[info.m_nEnvmapParallaxObb1]->IsDefined();
+		bool hasParallaxCorrection = params[info.m_nEnvmap]->IsDefined() && params[info.m_nEnvmapParallaxObb1]->IsDefined();
 		#endif
 		/*if ( hasFlashlight && !IsX360() )				
 		{
@@ -1007,7 +1008,8 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 
 		bool hasEnvmap = params[info.m_nEnvmap]->IsTexture();
 
-		if( hasEnvmap )
+		// AAAAAA
+		if (hasEnvmap)
 		{
 			DynamicCmdsOut.BindTexture( pShader, SHADER_SAMPLER2, info.m_nEnvmap, info.m_nEnvmapFrame );
 		}

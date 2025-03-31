@@ -13,7 +13,7 @@
 static LightmappedGeneric_DX9_Vars_t s_info;
 
 // TO-DO: Is this shader busted from parallax corrected cubemaps???
-BEGIN_VS_SHADER( LightmappedGeneric_Parallax,
+BEGIN_VS_SHADER( LightmappedGeneric,
 				 "Help for LightmappedGeneric" )
 
 	BEGIN_SHADER_PARAMS
