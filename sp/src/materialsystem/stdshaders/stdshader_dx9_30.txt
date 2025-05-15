@@ -37,6 +37,9 @@ vertexlit_and_unlit_generic_vs20.fxc
 vertexlit_and_unlit_generic_bump_ps2x.fxc
 vertexlit_and_unlit_generic_bump_vs20.fxc
 
+skin_ps20b.fxc
+skin_vs20.fxc
+
 
 
 

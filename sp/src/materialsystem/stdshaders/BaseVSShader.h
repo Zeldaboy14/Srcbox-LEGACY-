@@ -64,7 +64,6 @@
 			SET_DYNAMIC_PIXEL_SHADER( basename##_ps20 );			\
 		}
 
-
 //-----------------------------------------------------------------------------
 // Base class for shaders, contains helper methods.
 //-----------------------------------------------------------------------------
@@ -153,6 +152,50 @@ public:
 	void SetColorVertexShaderConstant( int nVertexReg, int colorVar, int alphaVar );
 	void SetColorPixelShaderConstant( int nPixelReg, int colorVar, int alphaVar );
 
+	struct DrawFlashlight_dx90_Vars_t
+	{
+		DrawFlashlight_dx90_Vars_t()
+		{
+			// set all ints to -1
+			memset(this, 0xFF, sizeof(DrawFlashlight_dx90_Vars_t));
+			// set all bools to a default value.
+			m_bBump = false;
+			m_bLightmappedGeneric = false;
+			m_bWorldVertexTransition = false;
+			m_bTeeth = false;
+			m_bSSBump = false;
+			m_fSeamlessScale = 0.0;
+		}
+		bool m_bBump;
+		bool m_bLightmappedGeneric;
+		bool m_bWorldVertexTransition;
+		bool m_bTeeth;
+		int m_nBumpmapVar;
+		int m_nBumpmapFrame;
+		int m_nBumpTransform;
+		int m_nFlashlightTextureVar;
+		int m_nFlashlightTextureFrameVar;
+		int m_nBaseTexture2Var;
+		int m_nBaseTexture2FrameVar;
+		int m_nBumpmap2Var;
+		int m_nBumpmap2Frame;
+		int m_nBump2Transform;
+		int m_nDetailVar;
+		int m_nDetailScale;
+		int m_nDetailTextureCombineMode;
+		int m_nDetailTextureBlendFactor;
+		int m_nDetailTint;
+		int m_nTeethForwardVar;
+		int m_nTeethIllumFactorVar;
+		int m_nAlphaTestReference;
+		bool m_bSSBump;
+		float m_fSeamlessScale;								// 0.0 = not seamless
+	};
+	void DrawFlashlight_dx90(IMaterialVar** params,
+		IShaderDynamicAPI *pShaderAPI, IShaderShadow* pShaderShadow, DrawFlashlight_dx90_Vars_t &vars);
+
+	// Helper for setting up flashlight constants
+	void SetFlashlightVertexShaderConstants( bool bBump, int bumpTransformVar, bool bDetail, int detailScaleVar, bool bSetTextureTransforms );
 
 #ifndef GAME_SHADER_DLL
 	//

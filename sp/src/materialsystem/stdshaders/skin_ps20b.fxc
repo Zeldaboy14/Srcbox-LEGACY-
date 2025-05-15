@@ -82,7 +82,8 @@ const float4 g_SpecularRimParams					: register( PSREG_SPEC_RIM_PARAMS );				// 
 PixelShaderLightInfo cLightInfo[3]					: register( PSREG_LIGHT_INFO_ARRAY );				// 2 registers each - 6 registers total (4th light spread across w's)
 
 // TODO: give this a better name.  For now, I don't want to touch shader_constant_register_map.h since I don't want to trigger a recompile of everything...
-const float4 g_ShaderControls						: register( PSREG_CONSTANT_27 );					// x is basemap alpgha phong mask, y is 1 - blendtintbybasealpha, z is tint overlay amount, w controls "INVERTPHONGMASK"
+const float4 g_ShaderControls						: register( PSREG_SHADER_CONTROLS );					// x is basemap alpgha phong mask, y is 1 - blendtintbybasealpha, z is tint overlay amount, w controls "INVERTPHONGMASK"
+//const float4 g_ShaderControls2						: register( PSREG_SHADER_CONTROLS_2 );
 #define g_FlashlightPos					g_FlashlightPos_RimBoost.xyz
 #define	g_fRimBoost						g_FlashlightPos_RimBoost.w
 #define g_FresnelRanges					g_FresnelSpecParams.xyz
@@ -95,6 +96,7 @@ const float4 g_ShaderControls						: register( PSREG_CONSTANT_27 );					// x is 
 #define g_fBaseMapAlphaPhongMask		g_ShaderControls.x
 #define g_fTintReplacementControl		g_ShaderControls.z
 #define g_fInvertPhongMask				g_ShaderControls.w
+#define g_fBaseLumPhongMask				g_EnvMapFresnel.y
 
 sampler BaseTextureSampler		: register( s0 );	// Base map, selfillum in alpha
 sampler SpecularWarpSampler		: register( s1 );	// Specular warp sampler (for iridescence etc)
@@ -182,6 +184,8 @@ float4 main( PS_INPUT i ) : COLOR
 	float3 vRimAmbientCubeColor = PixelShaderAmbientLight(vEyeDir, cAmbientCube);
 
 	float3 worldSpaceNormal, tangentSpaceNormal;
+	float3 lumCoefficients = { 0.3, 0.59, 0.11 };
+	float baseLum = dot( baseColor.rgb, lumCoefficients );
 	float fSpecMask = 1.0f;
 	float4 normalTexel = tex2D( NormalMapSampler, i.baseTexCoordDetailTexCoord.xy );
 
@@ -193,11 +197,13 @@ float4 main( PS_INPUT i ) : COLOR
 
 #if (FASTPATH_NOBUMP == 0 )
 	tangentSpaceNormal = lerp( 2.0f * normalTexel.xyz - 1.0f, float3(0, 0, 1), g_fBaseMapAlphaPhongMask );
-	fSpecMask = lerp( normalTexel.a, baseColor.a, g_fBaseMapAlphaPhongMask );
 #else
 	tangentSpaceNormal = float3(0, 0, 1);
 	fSpecMask = baseColor.a;
 #endif
+
+	fSpecMask = lerp( normalTexel.a, baseColor.a, g_fBaseMapAlphaPhongMask );
+	fSpecMask = lerp( fSpecMask, baseLum, g_fBaseLumPhongMask );
 
 	// We need a normal if we're doing any lighting
 	worldSpaceNormal = normalize( mul( i.tangentSpaceTranspose, tangentSpaceNormal ) );

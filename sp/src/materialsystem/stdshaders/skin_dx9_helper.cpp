@@ -87,7 +87,7 @@ void InitParamsSkin_DX9( CBaseVSShader *pShader, IMaterialVar** params, const ch
 	bool bEnvMap = (info.m_nEnvmap != -1) && params[info.m_nEnvmap]->IsDefined();
 	bool bDiffuseWarp = (info.m_nDiffuseWarpTexture != -1) && params[info.m_nDiffuseWarpTexture]->IsDefined();
 	bool bPhong = (info.m_nPhong != -1) && params[info.m_nPhong]->IsDefined();
-	if( bBump || bEnvMap || bDiffuseWarp || bPhong )
+	/*if( bBump || bEnvMap || bDiffuseWarp || bPhong )
 	{
 		SET_FLAGS2( MATERIAL_VAR2_NEEDS_TANGENT_SPACES );
 	}
@@ -115,6 +115,34 @@ void InitParamsSkin_DX9( CBaseVSShader *pShader, IMaterialVar** params, const ch
 	{
 		params[info.m_nEnvmapFresnel]->SetFloatValue( 0 );
 	}
+	
+	if ( (info.m_nBaseMapLuminancePhongMask != -1) && (params[info.m_nBaseMapLuminancePhongMask]->GetIntValue() != 0))
+	{
+		params[info.m_nBaseMapLuminancePhongMask]->SetFloatValue( 0 );
+	}*/
+
+	if (!bBump && !bEnvMap && !bDiffuseWarp && !bPhong)
+	{
+		CLEAR_FLAGS(MATERIAL_VAR_NORMALMAPALPHAENVMAPMASK);
+	}
+
+	if ((info.m_nSelfIllumFresnelMinMaxExp != -1) && (!params[info.m_nSelfIllumFresnelMinMaxExp]->IsDefined()))
+	{
+		params[info.m_nSelfIllumFresnelMinMaxExp]->SetVecValue(0.0f, 1.0f, 1.0f);
+	}
+
+	InitFloatParam(info.m_nEnvmapFresnel, params, 0.0f);
+	//InitFloatParam(info.m_nAmbientOcclusion, params, 0.0f);
+	//InitFloatParam(info.m_nDisplacementWrinkleMap, params, 0.0f);
+
+	InitIntParam(info.m_nSelfIllumFresnel, params, 0);
+	InitIntParam(info.m_nBaseMapAlphaPhongMask, params, 0);
+	InitIntParam(info.m_nBaseMapLuminancePhongMask, params, 0);
+	//InitIntParam(info.m_nShaderSrgbRead360, params, 0);
+	//InitIntParam(info.m_nAllowDiffuseModulation, params, 1);
+
+	//InitIntParam(info.m_nPhongDisableHalfLambert, params, 0);
+
 	InitIntParam(info.m_nBaseMapLuminancePhongMask, params, 0);
 }
 
@@ -254,6 +282,7 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 	bool bHasDiffuseWarp = (info.m_nDiffuseWarpTexture != -1) && params[info.m_nDiffuseWarpTexture]->IsTexture();
 	bool bHasPhongWarp = (info.m_nPhongWarpTexture != -1) && params[info.m_nPhongWarpTexture]->IsTexture();
 	bool bHasNormalMapAlphaEnvmapMask = IS_FLAG_SET( MATERIAL_VAR_NORMALMAPALPHAENVMAPMASK );
+	//bool bHasBaseLuminancePhongMask = (info.m_nBaseMapLuminancePhongMask != -1) && (params[info.m_nBaseMapLuminancePhongMask]->GetIntValue() != 0);
 
 #if !defined( _X360 )
 	bool bIsDecal = IS_FLAG_SET( MATERIAL_VAR_DECAL );
@@ -269,7 +298,7 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 
 	bool bBlendTintByBaseAlpha = IsBoolSet( info.m_nBlendTintByBaseAlpha, params ) && !bHasSelfIllum;	// Pixel shader can't do both BLENDTINTBYBASEALPHA and SELFILLUM, so let selfillum win
 
-	float flTintReplacementAmount = GetFloatParam( info.m_nTintReplacesBaseColor, params );
+	//float flTintReplacementAmount = GetFloatParam( info.m_nTintReplacesBaseColor, params );
 
 	BlendType_t nBlendType= pShader->EvaluateBlendRequirements( bBlendTintByBaseAlpha ? -1 : info.m_nBaseTexture, true );
 
@@ -731,8 +760,11 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 
 		bool bHasBaseAlphaPhongMask = (info.m_nBaseMapAlphaPhongMask != -1) && ( params[info.m_nBaseMapAlphaPhongMask]->GetIntValue() != 0 );
 		float fHasBaseAlphaPhongMask = bHasBaseAlphaPhongMask ? 1 : 0;
+		bool bBlendTintByBaseAlpha = (info.m_nBlendTintByBaseAlpha != -1) && (params[info.m_nBlendTintByBaseAlpha]->GetIntValue() != 0);
+		float fBlendTintByBaseAlpha = bBlendTintByBaseAlpha ? 1 : 0;
 		// Controls for lerp-style paths through shader code
-		float vShaderControls[4] = { fHasBaseAlphaPhongMask, 0.0f/*unused*/, flTintReplacementAmount, fInvertPhongMask };
+		//float vShaderControls[4] = { fHasBaseAlphaPhongMask, 0.0f/*unused*/, flTintReplacementAmount, fInvertPhongMask };
+		float vShaderControls[4] = { fHasBaseAlphaPhongMask, 0.0f, 1.0f - fBlendTintByBaseAlpha, fInvertPhongMask };
 		pShaderAPI->SetPixelShaderConstant( PSREG_CONSTANT_27, vShaderControls, 1 );
 
 		if ( hasDetailTexture )
@@ -764,6 +796,7 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 		}
 
 		pShader->SetAmbientCubeDynamicStateVertexShader();
+
 
 		if( !bHasFlashlight )
 		{
@@ -901,30 +934,47 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 		{
 			vFresnelRanges_SpecBoost[3] = 1.0f;
 		}
-		bool bHasFlashlightOnly = bHasFlashlight && !IsX360();
+		//bool bHasFlashlightOnly = bHasFlashlight && !IsX360();
+		//float vEnvMapFresnel_SelfIllumMask[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		bool bHasBaseLuminancePhongMask = (info.m_nBaseMapLuminancePhongMask != -1) && (params[info.m_nBaseMapLuminancePhongMask]->GetIntValue() != 0);
 		float fHasBaseLuminancePhongMask = bHasBaseLuminancePhongMask ? 1 : 0;
-		float vShaderControls2[4] = { 0.0f, fHasBaseLuminancePhongMask, 0.0f, 0.0f };
-		if (!bHasFlashlightOnly)
+		float vEnvMapFresnel_SelfIllumMask[4] = { 0.0f, fHasBaseLuminancePhongMask, 0.0f, 0.0f };
+
+		if (!bHasFlashlight)
 		{
+			pShaderAPI->BindStandardTexture(SHADER_SAMPLER5, TEXTURE_NORMALIZATION_CUBEMAP_SIGNED);
+
+			// Setting .x to 1 means to apply Fresnel to env map.  Setting w to 1 means use separate selfillummask
+			//float vEnvMapFresnel_SelfIllumMask[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			//vEnvMapFresnel_SelfIllumMask[3] = bHasSelfIllumMask ? 1.0f : 0.0f;
+
 			if (bHasEnvmap)
 			{
+				float vEnvMapTint_MaskControl[4] = { 1.0f, 1.0f, 1.0f, 0.0f };
+
+				// If we have a tint, grab it
+				if ((info.m_nEnvmapTint != -1) && params[info.m_nEnvmapTint]->IsDefined())
+					params[info.m_nEnvmapTint]->GetVecValue(vEnvMapTint_MaskControl, 3);
+
+				// Set control for source of env map mask (normal alpha or base alpha)
+				vEnvMapTint_MaskControl[3] = bHasNormalMapAlphaEnvmapMask ? 1.0f : 0.0f;
+
 				if ((info.m_nEnvmapFresnel != -1) && params[info.m_nEnvmapFresnel]->IsDefined())
+					vEnvMapFresnel_SelfIllumMask[0] = params[info.m_nEnvmapFresnel]->GetFloatValue();
+
+				// Handle mat_fullbright 2 (diffuse lighting only with 50% gamma space basetexture)
+				if (bLightingOnly)
 				{
-					vShaderControls2[0] = params[info.m_nEnvmapFresnel]->GetFloatValue();
+					vEnvMapTint_MaskControl[0] = vEnvMapTint_MaskControl[1] = vEnvMapTint_MaskControl[2] = 0.0f;
 				}
+
+				pShaderAPI->SetPixelShaderConstant(PSREG_ENVMAP_TINT__SHADOW_TWEAKS, vEnvMapTint_MaskControl, 1);
 			}
-		}
-		if ((info.m_nPhongExponent != -1) && params[info.m_nPhongExponent]->IsDefined())
-		{
-			vShaderControls2[2] = params[info.m_nPhongExponent]->GetFloatValue();		// This overrides the channel in the map
-		}
-		else
-		{
-			vShaderControls2[2] = 0;													// Use the alpha channel of the normal map for the exponent
+
+			pShaderAPI->SetPixelShaderConstant(PSREG_ENVMAP_FRESNEL__SELFILLUMMASK, vEnvMapFresnel_SelfIllumMask, 1);
 		}
 
-		vShaderControls2[3] = bHasSelfIllumMask ? 1.0f : 0.0f;
+		//vEnvMapFresnel_SelfIllumMask[3] = bHasSelfIllumMask ? 1.0f : 0.0f;
 
 		pShaderAPI->SetPixelShaderConstant( PSREG_EYEPOS_SPEC_EXPONENT, vEyePos_SpecExponent, 1 );
 		pShaderAPI->SetPixelShaderConstant( PSREG_FRESNEL_SPEC_PARAMS, vFresnelRanges_SpecBoost, 1 );
@@ -932,6 +982,7 @@ void DrawSkin_DX9_Internal( CBaseVSShader *pShader, IMaterialVar** params, IShad
 		pShaderAPI->SetPixelShaderConstant( PSREG_FLASHLIGHT_POSITION_RIM_BOOST, vRimBoost, 1 );	// Rim boost in w on non-flashlight pass
 
 		pShaderAPI->SetPixelShaderConstant( PSREG_SPEC_RIM_PARAMS, vSpecularTint, 1 );
+
 		pShaderAPI->SetPixelShaderFogParams( PSREG_FOG_PARAMS );
 
 		// flashlightfixme: put this in common code.

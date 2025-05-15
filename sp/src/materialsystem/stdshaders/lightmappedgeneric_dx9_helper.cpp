@@ -8,6 +8,8 @@
 
 #define PARALLAX 1
 
+//#define psh_forgot_to_set_static_RELIEF_MAPPING 0
+
 #include "lightmappedgeneric_dx9_helper.h"
 #include "BaseVSShader.h"
 #include "commandbuilder.h"
@@ -29,7 +31,8 @@ ConVar mat_disable_fancy_blending( "mat_disable_fancy_blending", "0" );
 ConVar mat_fullbright( "mat_fullbright","0", FCVAR_CHEAT );
 ConVar my_mat_fullbright( "mat_fullbright","0", FCVAR_CHEAT );
 ConVar mat_specular("mat_specular", "1", FCVAR_CHEAT);
-extern ConVar r_flashlight_version2;
+//extern ConVar r_flashlight_version2;
+static ConVar r_flashlight_version2("r_flashlight_version2", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY);
 
 class CLightmappedGeneric_DX9_Context : public CBasePerMaterialContextData
 {
@@ -335,7 +338,7 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 		#ifdef PARALLAX
 		bool hasParallaxCorrection = params[info.m_nEnvmap]->IsDefined() && params[info.m_nEnvmapParallaxObb1]->IsDefined();
 		#endif
-		/*if ( hasFlashlight && !IsX360() )				
+		if ( hasFlashlight && !IsX360() )				
 		{
 			// !!speed!! do this in the caller so we don't build struct every time
 			CBaseVSShader::DrawFlashlight_dx90_Vars_t vars;
@@ -366,7 +369,7 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 				vars.m_fSeamlessScale = 0.0;
 			pShader->DrawFlashlight_dx90( params, pShaderAPI, pShaderShadow, vars );
 			return;
-		}*/
+		}
 
 		pContextData->m_bFullyOpaque = bFullyOpaque;
 		pContextData->m_bFullyOpaqueWithoutAlphaTest = bFullyOpaqueWithoutAlphaTest;
@@ -1102,7 +1105,7 @@ void DrawLightmappedGeneric_DX9_Internal(CBaseVSShader *pShader, IMaterialVar** 
 			#ifdef PARALLAX	
 			SET_DYNAMIC_PIXEL_SHADER_CMD( DynamicCmdsOut, lightmappedgeneric_ps20 );
 			#else
-			//SET_DYNAMIC_PIXEL_SHADER_CMD(DynamicCmdsOut, lightmappedgeneric_ps20_stock);
+			SET_DYNAMIC_PIXEL_SHADER_CMD(DynamicCmdsOut, lightmappedgeneric_ps20_stock);
 			#endif
 		}
 
@@ -1174,11 +1177,11 @@ void DrawLightmappedGeneric_DX9(CBaseVSShader *pShader, IMaterialVar** params,
 										 CBasePerMaterialContextData **pContextDataPtr )
 {
 	bool hasFlashlight = pShader->UsingFlashlight( params );
-	/*if ( !IsX360() && !r_flashlight_version2.GetInt() )
+	if ( !IsX360() && !r_flashlight_version2.GetInt() )
 	{
 		DrawLightmappedGeneric_DX9_Internal( pShader, params, hasFlashlight, pShaderAPI, pShaderShadow, info, pContextDataPtr );
 		return;
-	}*/
+	}
 
 	//cubemap parallax correction
 	
