@@ -1,14 +1,42 @@
-// Completely Black Shader - Pixel Shader
+// ------------------------------------------------------------
+// MY_PIXELSHADER_PS2X.FXC
+//
+// This file implements an extremely simple pixel shader for
+// the Source Engine.
+// ------------------------------------------------------------
+
+// ------------------------------------------------------------
+// Includes
+// ------------------------------------------------------------
+
+// This is the standard include file that all pixel shaders
+// should have.
 #include "common_ps_fxc.h"
 
+float4 cFogColor : register(c0); // Now explicitly declared
+
+// ------------------------------------------------------------
+// This structure defines what inputs we expect to the shader.
+// These will come from the SDK_screenspace_general vertex
+// shader.
+//
+// For now, all we care about is what texture coordinate to
+// sample from.
+// ------------------------------------------------------------
 struct PS_INPUT
 {
-    float4 vProjPos : POSITION;    // Projected vertex position
-    float2 vTexCoord : TEXCOORD0; // Texture coordinate
+    float3 position : POSITION;
+    float3 normal   : NORMAL;
+	float2 texCoord	: TEXCOORD0;
 };
 
-float4 main( PS_INPUT input ) : COLOR
+// ------------------------------------------------------------
+// This is the main entry point to our pixel shader. We'll
+// return the color red as an output.
+// ------------------------------------------------------------
+float4 main( PS_INPUT i ) : COLOR
 {
-    // Output black color
-    return float4( 0.0, 0.0, 0.0, 1.0 );
+	return float4(0.0f, 0.0f, 0.0f, 1.0f);
+	//return 0;
+	//return cFogColor;
 }
